@@ -1,25 +1,50 @@
 {
-  "name": "rescal",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "dev": "next",
-    "build": "next build",
-    "start": "next start",
-    "start-db": "java -Djava.library.path=dynamodb/DynamoDBLocal_lib -jar dynamodb/DynamoDBLocal.jar"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "next": "^9.1.4",
-    "react": "^16.12.0",
-    "react-dom": "^16.12.0"
-  },
-  "devDependencies": {
-    "@types/node": "^12.12.12",
-    "@types/react": "^16.9.13",
-    "typescript": "^3.7.2"
-  }
+    "name": "rescal",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "dev": "next",
+        "build": "next build",
+        "start": "next start",
+        "start-db": "java -Djava.library.path=dynamodb/DynamoDBLocal_lib -jar dynamodb/DynamoDBLocal.jar",
+        "create-migration": "ts-node migrations/migrate.ts create",
+        "run-migrations": "ts-node migrations/migrate.ts run"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "aws-sdk": "^2.580.0",
+        "next": "^9.1.4",
+        "react": "^16.12.0",
+        "react-dom": "^16.12.0"
+    },
+    "devDependencies": {
+        "@types/node": "^12.12.14",
+        "@types/react": "^16.9.13",
+        "dynamodb-migrations": "0.0.10",
+        "husky": "^3.1.0",
+        "lint-staged": "^9.5.0",
+        "prettier": "1.19.1",
+        "ts-node": "^8.5.4",
+        "typescript": "^3.7.2"
+    },
+    "prettier": {
+        "trailingComma": "es5",
+        "tabWidth": 4,
+        "semi": false,
+        "singleQuote": true
+    },
+    "husky": {
+        "hooks": {
+            "pre-commit": "lint-staged"
+        }
+    },
+    "lint-staged": {
+        "*.{js,jsx,ts,tsx,css,json,md}": [
+            "prettier --write",
+            "git add"
+        ]
+    }
 }
