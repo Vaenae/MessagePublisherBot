@@ -8,8 +8,7 @@
         "build": "next build",
         "start": "next start",
         "start-db": "java -Djava.library.path=dynamodb/DynamoDBLocal_lib -jar dynamodb/DynamoDBLocal.jar",
-        "create-migration": "ts-node migrations/migrate.ts create",
-        "run-migrations": "ts-node migrations/migrate.ts run"
+        "migrations": "ts-node migrations/migrate.ts"
     },
     "keywords": [],
     "author": "",
