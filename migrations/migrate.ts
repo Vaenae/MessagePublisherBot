@@ -1,33 +1,15 @@
-import AWS from 'aws-sdk'
-import { global } from '../config/config'
-import { CreateTableInput } from 'aws-sdk/clients/dynamodb'
-import { PromiseResult } from 'aws-sdk/lib/request'
-
-var options = { region: 'localhost', endpoint: 'http://localhost:8000' }
-var dynamodb = new AWS.DynamoDB(options)
-// var docClient = new AWS.DynamoDB.DocumentClient(options)
+import {
+    listTables,
+    createTable,
+    migrationTableName,
+    writeMigrationInfo,
+    listMigrations,
+    getLastMigrationId,
+    Migration,
+} from './utils'
+import { createUsersMigration } from './1-create-users'
 
 // var args = process.argv.slice(2)
-
-interface Migration {
-    id: number
-    name: string
-    migrate: () => Promise<void>
-}
-
-async function listTables() {
-    return await dynamodb
-        .listTables()
-        .promise()
-        .then(data => data.TableNames)
-}
-
-async function createTable(table: CreateTableInput) {
-    const result = await dynamodb.createTable(table).promise()
-    console.log(result.TableDescription)
-}
-
-const migrationTableName = `${global.tablePrefix}-migrations`
 
 async function createMigrationTable() {
     const existingTables = await listTables()
@@ -57,51 +39,6 @@ async function createMigrationTable() {
     }
 }
 
-async function writeMigrationInfo(id: number, name: string) {
-    await dynamodb
-        .putItem({
-            TableName: migrationTableName,
-            Item: {
-                migrationId: {
-                    N: `${id}`,
-                },
-                name: {
-                    S: name,
-                },
-            },
-        })
-        .promise()
-}
-
-async function listMigrations() {
-    return await dynamodb
-        .scan({
-            TableName: migrationTableName,
-            Select: 'ALL_ATTRIBUTES',
-        })
-        .promise()
-    // return await dynamodb.query({
-    //     TableName: 'migrations',
-    //     KeyConditionExpression: 'prefix = :prefix',
-    //     ExpressionAttributeValues: {
-    //         ":prefix": {
-    //             S: global.tablePrefix
-    //         }
-    //     }
-    // }).promise()
-}
-
-function getLastMigrationId(
-    migrationList: PromiseResult<AWS.DynamoDB.ScanOutput, AWS.AWSError>
-) {
-    const migrationIds = migrationList.Items.map(i =>
-        Math.max(
-            ...Object.values(i.migrationId).map(i => Number.parseInt(i, 10))
-        )
-    )
-    return Math.max(...migrationIds)
-}
-
 async function initMigrations() {
     await createMigrationTable()
     const migrations = await listMigrations()
@@ -111,4 +48,19 @@ async function initMigrations() {
     return lastMigration
 }
 
-initMigrations()
+const migrations: Record<number, Migration> = {
+    2: createUsersMigration,
+}
+
+async function runMigrations() {
+    const lastMigration = await initMigrations()
+    Object.entries(migrations).forEach(async ([id, migration]) => {
+        const idNumber = Number.parseInt(id)
+        if (idNumber > lastMigration) {
+            await migration.migrate()
+            await writeMigrationInfo(idNumber, migration.name)
+        }
+    })
+}
+
+runMigrations()

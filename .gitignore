@@ -105,3 +105,5 @@ dist
 node_modules
 
 dynamodb
+
+*.db
