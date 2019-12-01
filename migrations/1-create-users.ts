@@ -1,7 +1,7 @@
-import { global } from '../config/config'
+import { config } from '../config/config'
 import { createTable, Migration } from './utils'
 
-const userTableName = `${global.tablePrefix}-users`
+const userTableName = `${config.tablePrefix}-users`
 
 async function migrate() {
     await createTable({
@@ -9,23 +9,23 @@ async function migrate() {
         AttributeDefinitions: [
             {
                 AttributeName: 'userId',
-                AttributeType: 'N',
-            },
+                AttributeType: 'N'
+            }
         ],
         KeySchema: [
             {
                 AttributeName: 'userId',
-                KeyType: 'HASH',
-            },
+                KeyType: 'HASH'
+            }
         ],
         ProvisionedThroughput: {
             ReadCapacityUnits: 5,
-            WriteCapacityUnits: 5,
-        },
+            WriteCapacityUnits: 5
+        }
     })
 }
 
 export const createUsersMigration: Migration = {
     name: 'Create users',
-    migrate,
+    migrate
 }

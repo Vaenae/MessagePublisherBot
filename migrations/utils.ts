@@ -1,14 +1,12 @@
-import AWS from 'aws-sdk'
 import { CreateTableInput } from 'aws-sdk/clients/dynamodb'
 import { PromiseResult } from 'aws-sdk/lib/request'
-import { global } from '../config/config'
+import { config } from '../config/config'
+import { dynamodb } from '../database/database'
 
 export interface Migration {
     name: string
     migrate: () => Promise<void>
 }
-var options = { region: 'localhost', endpoint: 'http://localhost:8000' }
-var dynamodb = new AWS.DynamoDB(options)
 
 export async function listTables() {
     return await dynamodb
@@ -22,7 +20,7 @@ export async function createTable(table: CreateTableInput) {
     console.log(result.TableDescription)
 }
 
-export const migrationTableName = `${global.tablePrefix}-migrations`
+export const migrationTableName = `${config.tablePrefix}-migrations`
 
 export async function writeMigrationInfo(id: number, name: string) {
     await dynamodb
@@ -30,12 +28,12 @@ export async function writeMigrationInfo(id: number, name: string) {
             TableName: migrationTableName,
             Item: {
                 migrationId: {
-                    N: `${id}`,
+                    N: `${id}`
                 },
                 name: {
-                    S: name,
-                },
-            },
+                    S: name
+                }
+            }
         })
         .promise()
 }
@@ -44,7 +42,7 @@ export async function listMigrations() {
     return await dynamodb
         .scan({
             TableName: migrationTableName,
-            Select: 'ALL_ATTRIBUTES',
+            Select: 'ALL_ATTRIBUTES'
         })
         .promise()
     // return await dynamodb.query({

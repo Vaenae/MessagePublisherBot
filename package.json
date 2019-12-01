@@ -5,10 +5,10 @@
     "main": "index.js",
     "scripts": {
         "dev": "next",
-        "build": "next build",
+        "build": "npm run migrations && next build",
         "start": "next start",
         "start-db": "java -Djava.library.path=dynamodb/DynamoDBLocal_lib -jar dynamodb/DynamoDBLocal.jar",
-        "migrations": "ts-node migrations/migrate.ts"
+        "migrations": "ts-node -p migrations/tsconfig.json migrations/migrate.ts"
     },
     "keywords": [],
     "author": "",
@@ -29,7 +29,7 @@
         "typescript": "^3.7.2"
     },
     "prettier": {
-        "trailingComma": "es5",
+        "trailingComma": "none",
         "tabWidth": 4,
         "semi": false,
         "singleQuote": true
