@@ -5,7 +5,7 @@ import {
     writeMigrationInfo,
     listMigrations,
     getLastMigrationId,
-    Migration,
+    Migration
 } from './utils'
 import { createUsersMigration } from './1-create-users'
 
@@ -21,19 +21,19 @@ async function createMigrationTable() {
             AttributeDefinitions: [
                 {
                     AttributeName: 'migrationId',
-                    AttributeType: 'N',
-                },
+                    AttributeType: 'N'
+                }
             ],
             KeySchema: [
                 {
                     AttributeName: 'migrationId',
-                    KeyType: 'HASH',
-                },
+                    KeyType: 'HASH'
+                }
             ],
             ProvisionedThroughput: {
                 ReadCapacityUnits: 1,
-                WriteCapacityUnits: 1,
-            },
+                WriteCapacityUnits: 1
+            }
         })
         await writeMigrationInfo(1, 'Migration table')
     }
@@ -49,7 +49,7 @@ async function initMigrations() {
 }
 
 const migrations: Record<number, Migration> = {
-    2: createUsersMigration,
+    2: createUsersMigration
 }
 
 async function runMigrations() {
@@ -63,4 +63,7 @@ async function runMigrations() {
     })
 }
 
-runMigrations()
+runMigrations().catch(error => {
+    console.error(error)
+    process.exit(1)
+})

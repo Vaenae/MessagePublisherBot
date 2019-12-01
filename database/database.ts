@@ -10,7 +10,7 @@ if (!config.useLocalDb && config.db_key != null && config.db_key_id != null) {
         accessKeyId: config.db_key_id,
         secretAccessKey: config.db_key
     })
-    new AWS.Config({
+    AWS.config.update({
         credentials,
         region: config.region
     })
