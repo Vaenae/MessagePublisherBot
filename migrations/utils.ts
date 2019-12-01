@@ -18,6 +18,10 @@ export async function listTables() {
 export async function createTable(table: CreateTableInput) {
     const result = await dynamodb.createTable(table).promise()
     console.log(result.TableDescription)
+    await dynamodb
+        .waitFor('tableExists', { TableName: table.TableName })
+        .promise()
+    return result
 }
 
 export const migrationTableName = `${config.tablePrefix}-migrations`

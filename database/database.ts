@@ -15,8 +15,10 @@ if (!config.useLocalDb && config.db_key != null && config.db_key_id != null) {
         region: config.region
     })
 } else {
-    console.log('Using local config')
+    console.log('Not using credentials from secrets')
 }
+
+console.log('useLocalDb: ' + config.useLocalDb)
 
 export const dynamodb = config.useLocalDb
     ? new AWS.DynamoDB(localOptions)
