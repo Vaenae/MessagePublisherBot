@@ -2,7 +2,7 @@ import AWS from 'aws-sdk'
 import { config } from '../config/config'
 
 const localOptions = { region: 'localhost', endpoint: 'http://localhost:8000' }
-const remoteOptions = { region: config.region, endpoint: config.endpoint }
+const remoteOptions = { region: config.region }
 
 if (!config.useLocalDb && config.db_key != null && config.db_key_id != null) {
     console.log('Using credentials from secrets')

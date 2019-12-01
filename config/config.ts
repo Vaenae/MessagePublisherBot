@@ -7,7 +7,6 @@ export interface Config extends Secrets {
     tablePrefix: string
     useLocalDb: boolean
     region: string
-    endpoint: string
 }
 
 function getUseLocalDb() {
@@ -31,6 +30,5 @@ export const config: Config = {
     ...getSecrets(),
     useLocalDb: getUseLocalDb(),
     tablePrefix: getTablePrefix(),
-    region: 'eu-north-1',
-    endpoint: 'dynamodb.eu-north-1.amazonaws.com'
+    region: 'eu-north-1'
 }
