@@ -1,6 +1,6 @@
 interface Secrets {
-    aws_access_key_id?: string
-    aws_secret_access_key?: string
+    db_key_id?: string
+    db_key?: string
 }
 
 export interface Config extends Secrets {
@@ -21,8 +21,8 @@ function getTablePrefix() {
 
 function getSecrets(): Secrets {
     return {
-        aws_access_key_id: process.env.AWS_ACCESS_KEY_ID,
-        aws_secret_access_key: process.env.AWS_SECRET_ACCESS_KEY
+        db_key_id: process.env.DB_KEY_ID,
+        db_key: process.env.DB_KEY
     }
 }
 

@@ -1,8 +1,8 @@
 {
     "build": {
         "env": {
-            "AWS_ACCESS_KEY_ID": "@aws_access_key_id",
-            "AWS_SECRET_ACCESS_KEY": "@aws_secret_access_key",
+            "DB_KEY_ID": "@db_key_id",
+            "DB_KEY": "@db_key",
             "USE_REMOTE_DB": "@use_remote_db"
         }
     }
