@@ -2,7 +2,7 @@ import { NextApiRequest, NextApiResponse } from 'next'
 import admin from 'firebase-admin'
 
 function initFirebase() {
-    if (admin.app() == null) {
+    if (admin.apps.length === 0) {
         const serviceAccount = JSON.parse(process.env.FIREBASE_ADMIN_CONFIG)
         admin.initializeApp({
             credential: admin.credential.cert(serviceAccount)
