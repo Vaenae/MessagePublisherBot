@@ -1,12 +1,18 @@
+export type FirebaseClientConfig = Object
+
 interface Secrets {
     db_key_id?: string
     db_key?: string
 }
 
-export interface Config extends Secrets {
+export interface ServerConfig extends Secrets {
     tablePrefix: string
     useLocalDb: boolean
     region: string
+}
+
+export interface ClientConfig {
+    firebaseClientConfig: FirebaseClientConfig
 }
 
 function getUseLocalDb() {
@@ -26,9 +32,13 @@ function getSecrets(): Secrets {
     }
 }
 
-export const config: Config = {
+export const serverConfig: ServerConfig = {
     ...getSecrets(),
     useLocalDb: getUseLocalDb(),
     tablePrefix: getTablePrefix(),
     region: 'eu-north-1'
+}
+
+export const clientConfig: ClientConfig = {
+    firebaseClientConfig: JSON.parse(process.env.FIREBASE_CLIENT_CONFIG)
 }

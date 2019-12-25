@@ -1,9 +1,16 @@
 {
+    "env": {
+        "DB_KEY_ID": "@db_key_id",
+        "DB_KEY": "@db_key",
+        "USE_REMOTE_DB": "@use_remote_db",
+        "FIREBASE_ADMIN_CONFIG": "@firebase_admin_config"
+    },
     "build": {
         "env": {
             "DB_KEY_ID": "@db_key_id",
             "DB_KEY": "@db_key",
-            "USE_REMOTE_DB": "@use_remote_db"
+            "USE_REMOTE_DB": "@use_remote_db",
+            "FIREBASE_CLIENT_CONFIG": "@firebase_client_config"
         }
     }
 }

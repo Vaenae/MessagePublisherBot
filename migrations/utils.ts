@@ -1,6 +1,6 @@
 import { CreateTableInput } from 'aws-sdk/clients/dynamodb'
 import { PromiseResult } from 'aws-sdk/lib/request'
-import { config } from '../config/config'
+import { serverConfig } from '../config/config'
 import { dynamodb } from '../database/database'
 
 export interface Migration {
@@ -24,7 +24,7 @@ export async function createTable(table: CreateTableInput) {
     return result
 }
 
-export const migrationTableName = `${config.tablePrefix}-migrations`
+export const migrationTableName = `${serverConfig.tablePrefix}-migrations`
 
 export async function writeMigrationInfo(id: number, name: string) {
     await dynamodb

@@ -1,7 +1,7 @@
-import { config } from '../config/config'
+import { serverConfig } from '../config/config'
 import { createTable, Migration } from './utils'
 
-const userTableName = `${config.tablePrefix}-users`
+const userTableName = `${serverConfig.tablePrefix}-users`
 
 async function migrate() {
     await createTable({
