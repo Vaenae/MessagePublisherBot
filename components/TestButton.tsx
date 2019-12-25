@@ -8,7 +8,7 @@ export function TestButton() {
     const [result, setResult] = useState<string>(undefined)
     const click = async () => {
         const currentUser = firebase.auth().currentUser
-        if (currentUser === undefined) {
+        if (currentUser == null) {
             setStatus('Not authenticated')
         } else {
             const result = await fetch('/api/test', {
