@@ -7,15 +7,18 @@ export function TestButton() {
     const [status, setStatus] = useState<string>(undefined)
     const [result, setResult] = useState<string>(undefined)
     const click = async () => {
-        const result = await fetch('/api/test', {
-            headers: {
-                Authorization: await firebase
-                    .auth()
-                    .currentUser.getIdToken(true)
-            }
-        })
-        setStatus(result.statusText)
-        setResult(await result.text())
+        const currentUser = firebase.auth().currentUser
+        if (currentUser === undefined) {
+            setStatus('Not authenticated')
+        } else {
+            const result = await fetch('/api/test', {
+                headers: {
+                    Authorization: await currentUser.getIdToken(true)
+                }
+            })
+            setStatus(result.statusText)
+            setResult(await result.text())
+        }
     }
     return (
         <div>
