@@ -18,15 +18,6 @@ export const Login = dynamic(
     () =>
         Promise.resolve(() => {
             const firebaseUiConfig = {
-                callbacks: {
-                    signInSuccessWithAuthResult: function(
-                        authResult: firebase.auth.UserCredential
-                    ) {
-                        console.log(authResult)
-                        cookie.set('token', authResult.credential.toJSON())
-                        return true
-                    }
-                },
                 signInOptions: [
                     firebase.auth.GoogleAuthProvider.PROVIDER_ID,
                     firebase.auth.EmailAuthProvider.PROVIDER_ID

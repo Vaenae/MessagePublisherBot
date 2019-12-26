@@ -13,6 +13,7 @@ export interface ServerConfig extends Secrets {
 
 export interface ClientConfig {
     firebaseClientConfig: FirebaseClientConfig
+    sentryDsn: string
 }
 
 function getUseLocalDb() {
@@ -40,5 +41,6 @@ export const serverConfig: ServerConfig = {
 }
 
 export const clientConfig: ClientConfig = {
-    firebaseClientConfig: JSON.parse(process.env.FIREBASE_CLIENT_CONFIG)
+    firebaseClientConfig: JSON.parse(process.env.FIREBASE_CLIENT_CONFIG),
+    sentryDsn: process.env.SENTRY_DSN
 }
