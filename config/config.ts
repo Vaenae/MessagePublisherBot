@@ -41,6 +41,8 @@ export const serverConfig: ServerConfig = {
 }
 
 export const clientConfig: ClientConfig = {
-    firebaseClientConfig: JSON.parse(process.env.FIREBASE_CLIENT_CONFIG),
+    firebaseClientConfig: JSON.parse(
+        process.env.FIREBASE_CLIENT_CONFIG || '{}'
+    ),
     sentryDsn: process.env.SENTRY_DSN
 }
