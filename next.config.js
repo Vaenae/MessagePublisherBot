@@ -1,6 +1,7 @@
 const withCSS = require('@zeit/next-css')
 const webpack = require('webpack')
 const nextSourceMaps = require('@zeit/next-source-maps')()
+const SentryWebpackPlugin = require('@sentry/webpack-plugin')
 
 module.exports = nextSourceMaps(
     withCSS({
@@ -13,6 +14,12 @@ module.exports = nextSourceMaps(
             config.plugins.push(
                 new webpack.DefinePlugin({
                     'process.env.SENTRY_RELEASE': JSON.stringify(buildId)
+                })
+            )
+            config.plugins.push(
+                new SentryWebpackPlugin({
+                    include: '.next',
+                    ignore: ['node_modules', 'webpack.config.js']
                 })
             )
 
