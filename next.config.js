@@ -11,6 +11,7 @@ module.exports = nextSourceMaps(
             SENTRY_DSN: process.env.SENTRY_DSN
         },
         webpack: (config, { isServer, buildId }) => {
+            console.log(buildId)
             config.plugins.push(
                 new webpack.DefinePlugin({
                     'process.env.SENTRY_RELEASE': JSON.stringify(buildId)
@@ -20,7 +21,7 @@ module.exports = nextSourceMaps(
                 new SentryWebpackPlugin({
                     include: '.next',
                     ignore: ['node_modules', 'webpack.config.js'],
-                    release: buildId.id
+                    release: buildId
                 })
             )
 
