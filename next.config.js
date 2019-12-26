@@ -19,7 +19,8 @@ module.exports = nextSourceMaps(
             config.plugins.push(
                 new SentryWebpackPlugin({
                     include: '.next',
-                    ignore: ['node_modules', 'webpack.config.js']
+                    ignore: ['node_modules', 'webpack.config.js'],
+                    release: JSON.stringify(buildId)
                 })
             )
 
