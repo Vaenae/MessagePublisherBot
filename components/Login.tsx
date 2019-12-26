@@ -3,11 +3,6 @@ import firebase from 'firebase/app'
 import 'firebase/auth'
 import { StyledFirebaseAuth, FirebaseAuth } from 'react-firebaseui'
 import { clientConfig } from '../config/config'
-import cookie from 'js-cookie'
-
-export const login = (token: any) => {
-    cookie.set('token', token, { expires: 1 })
-}
 
 if (!firebase.apps.length) {
     firebase.initializeApp(clientConfig.firebaseClientConfig)
