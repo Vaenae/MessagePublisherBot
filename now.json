@@ -15,7 +15,8 @@
             "SENTRY_DSN": "@sentry_dsn",
             "SENTRY_AUTH_TOKEN": "@sentry_auth_token",
             "SENTRY_ORG": "@sentry_org",
-            "SENTRY_PROJECT": "@sentry_project"
+            "SENTRY_PROJECT": "@sentry_project",
+            "SENTRY_REPO": "@sentry_repo"
         }
     }
 }
