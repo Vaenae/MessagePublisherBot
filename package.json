@@ -4,7 +4,7 @@
     "description": "",
     "main": "index.js",
     "scripts": {
-        "build": "npm run migrations && next build",
+        "build": "npm run migrations && next build && sh ./post-build.sh",
         "start": "next start",
         "start-db": "java -Djava.library.path=dynamodb/DynamoDBLocal_lib -jar dynamodb/DynamoDBLocal.jar",
         "migrations": "ts-node --project migrations/tsconfig.json migrations/migrate.ts"
@@ -28,7 +28,7 @@
         "react-firebaseui": "4.0.0"
     },
     "devDependencies": {
-        "@sentry/webpack-plugin": "1.9.3",
+        "@sentry/cli": "1.49.0",
         "@types/node": "13.1.0",
         "@types/react": "16.9.17",
         "@zeit/next-source-maps": "0.0.4-canary.1",

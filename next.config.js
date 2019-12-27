@@ -16,13 +16,6 @@ module.exports = nextSourceMaps(
                     'process.env.SENTRY_RELEASE': buildId
                 })
             )
-            config.plugins.push(
-                new SentryWebpackPlugin({
-                    include: '.',
-                    ignore: ['node_modules', 'webpack.config.js'],
-                    release: buildId
-                })
-            )
 
             if (!isServer) {
                 config.resolve.alias['@sentry/node'] = '@sentry/browser'
