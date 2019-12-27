@@ -4,7 +4,8 @@ import * as Sentry from '@sentry/node'
 import { clientConfig } from '../config/config'
 
 Sentry.init({
-    dsn: clientConfig.sentryDsn
+    dsn: clientConfig.sentryDsn,
+    release: process.env.NOW_GITHUB_COMMIT_SHA
 })
 
 interface MyAppProps {
