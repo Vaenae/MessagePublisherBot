@@ -7,7 +7,8 @@ module.exports = nextSourceMaps(
         cssModules: true,
         env: {
             FIREBASE_CLIENT_CONFIG: process.env.FIREBASE_CLIENT_CONFIG,
-            SENTRY_DSN: process.env.SENTRY_DSN
+            SENTRY_DSN: process.env.SENTRY_DSN,
+            NOW_GITHUB_COMMIT_SHA: process.env.NOW_GITHUB_COMMIT_SHA
         },
         webpack: (config, { isServer, buildId }) => {
             config.plugins.push(
