@@ -14,18 +14,6 @@ export const Login = dynamic(
     () =>
         Promise.resolve(() => {
             const firebaseUiConfig = {
-                callbacks: {
-                    signInSuccessWithAuthResult: function(
-                        authResult: firebase.auth.UserCredential
-                    ) {
-                        Sentry.setUser({
-                            id: authResult.user.uid,
-                            email: authResult.user.email,
-                            username: authResult.user.displayName
-                        })
-                        return true
-                    }
-                },
                 signInOptions: [
                     firebase.auth.GoogleAuthProvider.PROVIDER_ID,
                     firebase.auth.EmailAuthProvider.PROVIDER_ID
