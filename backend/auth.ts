@@ -1,5 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import admin from 'firebase-admin'
+import * as Sentry from '@sentry/node'
 
 function initFirebase() {
     if (admin.apps.length === 0) {
@@ -24,6 +25,10 @@ export const withAuth = (
         const idToken = req.headers.authorization
         initFirebase()
         const authResult = await admin.auth().verifyIdToken(idToken)
+        Sentry.setUser({
+            id: authResult.user.uid,
+            email: authResult.user.email
+        })
         return await func(req, res, authResult)
     } catch (error) {
         console.error(error)

@@ -22,7 +22,9 @@ const setSentryUser = () => {
                 username: user.displayName
             })
         }
-    } catch {}
+    } catch (ex) {
+        console.error('Could not set sentry user: ', ex)
+    }
 }
 
 const MyError = ({ statusCode, hasGetInitialPropsRun, err }: MyErrorProps) => {
