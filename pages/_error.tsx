@@ -12,15 +12,17 @@ interface MyErrorProps {
 }
 
 const setSentryUser = () => {
-    const user = firebase.auth().currentUser
-    console.log('User: ', user)
-    if (user != null) {
-        Sentry.setUser({
-            id: user.uid,
-            email: user.email,
-            username: user.displayName
-        })
-    }
+    try {
+        const user = firebase.auth().currentUser
+        console.log('User: ', user)
+        if (user != null) {
+            Sentry.setUser({
+                id: user.uid,
+                email: user.email,
+                username: user.displayName
+            })
+        }
+    } catch {}
 }
 
 const MyError = ({ statusCode, hasGetInitialPropsRun, err }: MyErrorProps) => {
