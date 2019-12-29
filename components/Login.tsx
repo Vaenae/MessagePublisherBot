@@ -3,6 +3,7 @@ import firebase from 'firebase/app'
 import 'firebase/auth'
 import { StyledFirebaseAuth, FirebaseAuth } from 'react-firebaseui'
 import { clientConfig } from '../config/config'
+import * as Sentry from '@sentry/node'
 
 if (!firebase.apps.length) {
     firebase.initializeApp(clientConfig.firebaseClientConfig)
@@ -13,6 +14,18 @@ export const Login = dynamic(
     () =>
         Promise.resolve(() => {
             const firebaseUiConfig = {
+                callbacks: {
+                    signInSuccessWithAuthResult: function(
+                        authResult: firebase.auth.UserCredential
+                    ) {
+                        Sentry.setUser({
+                            id: authResult.user.uid,
+                            email: authResult.user.email,
+                            username: authResult.user.displayName
+                        })
+                        return true
+                    }
+                },
                 signInOptions: [
                     firebase.auth.GoogleAuthProvider.PROVIDER_ID,
                     firebase.auth.EmailAuthProvider.PROVIDER_ID
