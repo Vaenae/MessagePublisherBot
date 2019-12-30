@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 const withCSS = require('@zeit/next-css')
 const webpack = require('webpack')
 const nextSourceMaps = require('@zeit/next-source-maps')()
@@ -19,6 +20,10 @@ module.exports = nextSourceMaps(
 
             if (!isServer) {
                 config.resolve.alias['@sentry/node'] = '@sentry/browser'
+            }
+
+            config.node = {
+                fs: 'empty'
             }
 
             return config
