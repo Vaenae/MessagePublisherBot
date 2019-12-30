@@ -6,13 +6,13 @@ const remoteOptions = { region: serverConfig.region }
 
 if (
     !serverConfig.useLocalDb &&
-    serverConfig.db_key != null &&
-    serverConfig.db_key_id != null
+    serverConfig.dbKey != null &&
+    serverConfig.dbKeyId != null
 ) {
     console.log('Using credentials from secrets')
     const credentials = new AWS.Credentials({
-        accessKeyId: serverConfig.db_key_id,
-        secretAccessKey: serverConfig.db_key
+        accessKeyId: serverConfig.dbKeyId,
+        secretAccessKey: serverConfig.dbKey
     })
     AWS.config.update({
         credentials,

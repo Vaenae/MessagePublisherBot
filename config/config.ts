@@ -1,8 +1,8 @@
-export type FirebaseClientConfig = Object
+export type FirebaseClientConfig = {}
 
 interface Secrets {
-    db_key_id?: string
-    db_key?: string
+    dbKeyId?: string
+    dbKey?: string
 }
 
 export interface ServerConfig extends Secrets {
@@ -13,7 +13,7 @@ export interface ServerConfig extends Secrets {
 
 export interface ClientConfig {
     firebaseClientConfig: FirebaseClientConfig
-    sentryDsn: string
+    sentryDsn?: string
 }
 
 function getUseLocalDb() {
@@ -28,8 +28,8 @@ function getTablePrefix() {
 
 function getSecrets(): Secrets {
     return {
-        db_key_id: process.env.DB_KEY_ID,
-        db_key: process.env.DB_KEY
+        dbKeyId: process.env.DB_KEY_ID,
+        dbKey: process.env.DB_KEY
     }
 }
 

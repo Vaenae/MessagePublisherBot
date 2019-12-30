@@ -1,11 +1,12 @@
+import React from 'react'
 import fetch from 'isomorphic-unfetch'
 import { useState } from 'react'
 import firebase from 'firebase/app'
 import 'firebase/auth'
 
 export function TestButton() {
-    const [status, setStatus] = useState<string>(undefined)
-    const [result, setResult] = useState<string>(undefined)
+    const [status, setStatus] = useState<string | null>(null)
+    const [result, setResult] = useState<string | null>(null)
     const click = async () => {
         const currentUser = firebase.auth().currentUser
         if (currentUser == null) {

@@ -2,8 +2,6 @@ import React from 'react'
 import NextError from 'next/error'
 import * as Sentry from '@sentry/node'
 import { NextPageContext } from 'next'
-import firebase from 'firebase/app'
-import 'firebase/auth'
 
 interface MyErrorProps {
     statusCode: number
@@ -11,28 +9,11 @@ interface MyErrorProps {
     err: Error
 }
 
-const setSentryUser = () => {
-    try {
-        const user = firebase.auth().currentUser
-        console.log('User: ', user)
-        if (user != null) {
-            Sentry.setUser({
-                id: user.uid,
-                email: user.email,
-                username: user.displayName
-            })
-        }
-    } catch (ex) {
-        console.error('Could not set sentry user: ', ex)
-    }
-}
-
 const MyError = ({ statusCode, hasGetInitialPropsRun, err }: MyErrorProps) => {
     if (!hasGetInitialPropsRun && err) {
         // getInitialProps is not called in case of
         // https://github.com/zeit/next.js/issues/8592. As a workaround, we pass
         // err via _app.js so it can be captured
-        setSentryUser()
         Sentry.captureException(err)
     }
 
@@ -44,9 +25,6 @@ MyError.getInitialProps = async (pageContext: NextPageContext) => {
         ...(await NextError.getInitialProps(pageContext)),
         hasGetInitialPropsRun: true
     }
-
-    setSentryUser()
-
     if (pageContext.res) {
         // Running on the server, the response object is available.
         //

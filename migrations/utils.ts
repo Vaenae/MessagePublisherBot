@@ -12,7 +12,7 @@ export async function listTables() {
     return await dynamodb
         .listTables()
         .promise()
-        .then(data => data.TableNames)
+        .then(data => data.TableNames || [])
 }
 
 export async function createTable(table: CreateTableInput) {
@@ -63,7 +63,7 @@ export async function listMigrations() {
 export function getLastMigrationId(
     migrationList: PromiseResult<AWS.DynamoDB.ScanOutput, AWS.AWSError>
 ) {
-    const migrationIds = migrationList.Items.map(i =>
+    const migrationIds = (migrationList.Items || []).map(i =>
         Math.max(
             ...Object.values(i.migrationId).map(i => Number.parseInt(i, 10))
         )

@@ -7,7 +7,8 @@
         "build": "npm run migrations && next build && sh ./post-build.sh",
         "start": "next start",
         "start-db": "java -Djava.library.path=dynamodb/DynamoDBLocal_lib -jar dynamodb/DynamoDBLocal.jar",
-        "migrations": "ts-node --project migrations/tsconfig.json migrations/migrate.ts"
+        "migrations": "ts-node --project migrations/tsconfig.json migrations/migrate.ts",
+        "lint": "tsc --noEmit && eslint '*/**/*.{js,ts,tsx}' --quiet --fix"
     },
     "keywords": [],
     "author": "",
@@ -31,7 +32,14 @@
         "@sentry/cli": "1.49.0",
         "@types/node": "13.1.0",
         "@types/react": "16.9.17",
+        "@typescript-eslint/eslint-plugin": "2.13.0",
+        "@typescript-eslint/parser": "2.13.0",
         "@zeit/next-source-maps": "0.0.4-canary.1",
+        "eslint": "6.8.0",
+        "eslint-config-prettier": "6.9.0",
+        "eslint-plugin-prettier": "3.1.2",
+        "eslint-plugin-react": "7.17.0",
+        "eslint-plugin-react-hooks": "2.3.0",
         "husky": "3.1.0",
         "lint-staged": "9.5.0",
         "prettier": "1.19.1",
@@ -51,6 +59,7 @@
     },
     "lint-staged": {
         "*.{js,jsx,ts,tsx,css,json,md}": [
+            "eslint --fix",
             "prettier --write",
             "git add"
         ]

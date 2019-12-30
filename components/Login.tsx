@@ -1,13 +1,8 @@
+import React from 'react'
 import dynamic from 'next/dynamic'
 import firebase from 'firebase/app'
 import 'firebase/auth'
-import { StyledFirebaseAuth, FirebaseAuth } from 'react-firebaseui'
-import { clientConfig } from '../config/config'
-import * as Sentry from '@sentry/node'
-
-if (!firebase.apps.length) {
-    firebase.initializeApp(clientConfig.firebaseClientConfig)
-}
+import { StyledFirebaseAuth } from 'react-firebaseui'
 
 // We want to get the current url from the window, that's why this is dynamic
 export const Login = dynamic(

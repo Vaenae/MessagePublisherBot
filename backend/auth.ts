@@ -4,7 +4,9 @@ import * as Sentry from '@sentry/node'
 
 function initFirebase() {
     if (admin.apps.length === 0) {
-        const serviceAccount = JSON.parse(process.env.FIREBASE_ADMIN_CONFIG)
+        const serviceAccount = JSON.parse(
+            process.env.FIREBASE_ADMIN_CONFIG || '{}'
+        )
         admin.initializeApp({
             credential: admin.credential.cert(serviceAccount)
         })
@@ -24,10 +26,10 @@ export const withAuth = (
     try {
         const idToken = req.headers.authorization
         initFirebase()
-        const authResult = await admin.auth().verifyIdToken(idToken)
+        const authResult = await admin.auth().verifyIdToken(idToken || '')
         Sentry.setUser({
-            id: authResult.user.uid,
-            email: authResult.user.email
+            id: authResult.user_id,
+            email: authResult.email
         })
         return await func(req, res, authResult)
     } catch (error) {

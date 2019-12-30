@@ -1,3 +1,5 @@
+import React from 'react'
+
 export function TestException() {
     const click = async () => {
         throw new Error('Troubleee')
