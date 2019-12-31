@@ -25,8 +25,8 @@ function getTablePrefix() {
     return branchName != null
         ? // Only use allowed dynamodb table name chars
           // https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/HowItWorks.NamingRulesDataTypes.html
-          `rescal-${branchName.replace(/[^-_.\w]/g, '_')}`
-        : 'rescal'
+          `nextjs-cloud-template-${branchName.replace(/[^-_.\w]/g, '_')}`
+        : 'nextjs-cloud-template'
 }
 
 function getSecrets(): Secrets {

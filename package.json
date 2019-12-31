@@ -58,8 +58,12 @@
         }
     },
     "lint-staged": {
-        "*.{js,jsx,ts,tsx,css,json,md}": [
+        "*.{js,jsx,ts,tsx,css,json}": [
             "eslint --fix",
+            "prettier --write",
+            "git add"
+        ],
+        "*.{md}": [
             "prettier --write",
             "git add"
         ]
