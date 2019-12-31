@@ -21,8 +21,11 @@ function getUseLocalDb() {
 }
 
 function getTablePrefix() {
-    return process.env.NOW_GITHUB_COMMIT_REF != null
-        ? `rescal-${process.env.NOW_GITHUB_COMMIT_REF}`
+    const branchName = process.env.NOW_GITHUB_COMMIT_REF
+    return branchName != null
+        ? // Only use allowed dynamodb table name chars
+          // https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/HowItWorks.NamingRulesDataTypes.html
+          `rescal-${branchName.replace(/[^-_.\w]/g, '_')}`
         : 'rescal'
 }
 
