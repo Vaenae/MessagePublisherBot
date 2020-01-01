@@ -96,6 +96,6 @@ Setup:
 -   Register to [Sentry](https://sentry.io)
 -   Create a new project
 -   Save your dsn to SENTRY*DSN variable in .env and .env.build and to a Now secret \_nextjs-cloud-template.sentry_dsn*
--   Install Github integration
 -   Go to Settings > Account > API > Auth Tokens in Sentry console and add a new API key. Save the key to SENTRY_AUTH_TOKEN variable in .env.build and Now secrets.
+-   In Sentry settings / integrations, install Github integration and add your repo to it.
 -   Set up your variables SENTRY*ORG, SENTRY_PROJECT and SENTRY_REPO in .env.build and Now secrets \_nextjs-cloud-template.sentry_org*, _nextjs-cloud-template.sentry_project_ and _nextjs-cloud-template.sentry_repo_.
