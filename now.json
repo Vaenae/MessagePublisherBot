@@ -4,19 +4,19 @@
         "DB_KEY": "@db_key",
         "USE_REMOTE_DB": "@use_remote_db",
         "FIREBASE_ADMIN_CONFIG": "@firebase_admin_config",
-        "SENTRY_DSN": "@sentry_dsn"
+        "SENTRY_DSN": "@nextjs-cloud-template.sentry_dsn"
     },
     "build": {
         "env": {
             "DB_KEY_ID": "@db_key_id",
             "DB_KEY": "@db_key",
             "USE_REMOTE_DB": "@use_remote_db",
-            "FIREBASE_CLIENT_CONFIG": "@firebase_client_config",
-            "SENTRY_DSN": "@sentry_dsn",
+            "FIREBASE_CLIENT_CONFIG": "@nextjs-cloud-template.firebase_client_config",
+            "SENTRY_DSN": "@nextjs-cloud-template.sentry_dsn",
             "SENTRY_AUTH_TOKEN": "@sentry_auth_token",
-            "SENTRY_ORG": "@sentry_org",
-            "SENTRY_PROJECT": "@sentry_project",
-            "SENTRY_REPO": "@sentry_repo"
+            "SENTRY_ORG": "@nextjs-cloud-template.sentry_org",
+            "SENTRY_PROJECT": "@nextjs-cloud-template.sentry_project",
+            "SENTRY_REPO": "@nextjs-cloud-template.sentry_repo"
         }
     }
 }

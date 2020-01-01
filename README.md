@@ -78,8 +78,8 @@ Firebase is used to handle the authentication. This template includes the email 
 -   Register to Firebase and create a new project in the [Firebase console.](https://console.firebase.google.com/)
 -   Add Authentication to the project, enabling email and Google sign in.
 -   Add your domain to the Authorized domains
--   Register a new web app for your project. You should get a config json. Modify this to one line, add it to .env.build FIREBASE_CLIENT_CONFIG and to now secrets.
--   Create a service account in Firebase console project settings. Generate a new private key json. Modify this to one line, add it to .env FIREBASE_ADMIN_CONFIG and to now secrets.
+-   Register a new web app for your project. You should get a config json. Modify this to fit onto one line, add it to .env.build FIREBASE_CLIENT_CONFIG and to a Now secret _nextjs-cloud-template.firebase_client_config_.
+-   Create a service account in Firebase console project settings. Generate a new private key json. Modify this to one line, add it to .env FIREBASE_ADMIN_CONFIG and to Now secrets.
 
 ## Sentry
 
@@ -89,7 +89,7 @@ Setup:
 
 -   Register to [Sentry](https://sentry.io)
 -   Create a new project
--   Save your dsn to SENTRY_DSN variable in .env and .env.build and to Now secrets
+-   Save your dsn to SENTRY_DSN variable in .env and .env.build and to a Now secret _nextjs-cloud-template.sentry_dsn_
 -   Install Github integration
 -   Go to Settings > Account > API > Auth Tokens in Sentry console and add a new API key. Save the key to SENTRY_AUTH_TOKEN variable in .env.build and Now secrets.
--   Set up your variables SENTRY_ORG, SENTRY_PROJECT and SENTRY_REPO in .env.build and Now secrets.
+-   Set up your variables SENTRY_ORG, SENTRY_PROJECT and SENTRY_REPO in .env.build and Now secrets _nextjs-cloud-template.sentry_org_, _nextjs-cloud-template.sentry_project_ and _nextjs-cloud-template.sentry_repo_.
