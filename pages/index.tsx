@@ -1,16 +1,17 @@
-import React from 'react'
+import React, { Fragment } from 'react'
 import { TestButton } from '../components/TestButton'
 import { TestException } from '../components/TestException'
-import { User } from '../components/User'
+import Layout from '../components/Layout'
 
 const Home = () => {
     return (
-        <div>
-            <User />
-            <h1>Hello</h1>
-            <TestButton />
-            <TestException />
-        </div>
+        <Layout>
+            <Fragment>
+                <h1>Hello</h1>
+                <TestButton />
+                <TestException />
+            </Fragment>
+        </Layout>
     )
 }
 
