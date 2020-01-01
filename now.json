@@ -3,7 +3,7 @@
         "DB_KEY_ID": "@db_key_id",
         "DB_KEY": "@db_key",
         "USE_REMOTE_DB": "@use_remote_db",
-        "FIREBASE_ADMIN_CONFIG": "@firebase_admin_config",
+        "FIREBASE_ADMIN_CONFIG": "@nextjs-cloud-template.firebase_admin_config",
         "SENTRY_DSN": "@nextjs-cloud-template.sentry_dsn"
     },
     "build": {

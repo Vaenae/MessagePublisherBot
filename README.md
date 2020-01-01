@@ -50,6 +50,12 @@ now
 
 This template relies on the Github integration, so you should set up in the zeit.co website by adding the repo there.
 
+Run the development environment with
+
+```
+now dev
+```
+
 ## AWS Dynamodb
 
 You can use Dynamodb in the cloud or you can install a local version for development. The deployment process will run the migration files in the migrations folder. Each different branch in Github will have their own tables created in Dynamodb, using the getTablePrefix function.
@@ -78,8 +84,8 @@ Firebase is used to handle the authentication. This template includes the email 
 -   Register to Firebase and create a new project in the [Firebase console.](https://console.firebase.google.com/)
 -   Add Authentication to the project, enabling email and Google sign in.
 -   Add your domain to the Authorized domains
--   Register a new web app for your project. You should get a config json. Modify this to fit onto one line, add it to .env.build FIREBASE_CLIENT_CONFIG and to a Now secret _nextjs-cloud-template.firebase_client_config_.
--   Create a service account in Firebase console project settings. Generate a new private key json. Modify this to one line, add it to .env FIREBASE_ADMIN_CONFIG and to Now secrets.
+-   Register a new web app for your project. You should get a config json. Modify this to fit onto one line, add it to .env.build FIREBASE*CLIENT_CONFIG and to a Now secret \_nextjs-cloud-template.firebase_client_config*.
+-   Create a service account in Firebase console project settings. Generate a new private key json. Modify this to one line, add it to .env FIREBASE*ADMIN_CONFIG and to a Now secret \_nextjs-cloud-template.firebase_admin_config*.
 
 ## Sentry
 
@@ -89,7 +95,7 @@ Setup:
 
 -   Register to [Sentry](https://sentry.io)
 -   Create a new project
--   Save your dsn to SENTRY_DSN variable in .env and .env.build and to a Now secret _nextjs-cloud-template.sentry_dsn_
+-   Save your dsn to SENTRY*DSN variable in .env and .env.build and to a Now secret \_nextjs-cloud-template.sentry_dsn*
 -   Install Github integration
 -   Go to Settings > Account > API > Auth Tokens in Sentry console and add a new API key. Save the key to SENTRY_AUTH_TOKEN variable in .env.build and Now secrets.
--   Set up your variables SENTRY_ORG, SENTRY_PROJECT and SENTRY_REPO in .env.build and Now secrets _nextjs-cloud-template.sentry_org_, _nextjs-cloud-template.sentry_project_ and _nextjs-cloud-template.sentry_repo_.
+-   Set up your variables SENTRY*ORG, SENTRY_PROJECT and SENTRY_REPO in .env.build and Now secrets \_nextjs-cloud-template.sentry_org*, _nextjs-cloud-template.sentry_project_ and _nextjs-cloud-template.sentry_repo_.
