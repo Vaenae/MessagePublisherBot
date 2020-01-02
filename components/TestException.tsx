@@ -1,4 +1,5 @@
 import React from 'react'
+import { Button } from './bulma/Button'
 
 export function TestException() {
     const click = async () => {
@@ -6,7 +7,7 @@ export function TestException() {
     }
     return (
         <div>
-            <input type="button" value="Test exception" onClick={click}></input>
+            <Button onClick={click}>Test exception</Button>
         </div>
     )
 }

@@ -3,6 +3,7 @@ import fetch from 'isomorphic-unfetch'
 import { useState } from 'react'
 import firebase from 'firebase/app'
 import 'firebase/auth'
+import { Button } from './bulma/Button'
 
 export function TestButton() {
     const [status, setStatus] = useState<string | null>(null)
@@ -23,7 +24,7 @@ export function TestButton() {
     }
     return (
         <div>
-            <input type="button" value="Test button" onClick={click}></input>
+            <Button onClick={click}>Test button</Button>
             <div>Status: {status}</div>
             <div>Result: {result}</div>
         </div>
