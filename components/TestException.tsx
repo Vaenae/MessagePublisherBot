@@ -1,5 +1,5 @@
 import React from 'react'
-import { Button } from './bulma/Button'
+import { Button } from './bulma/elements/Button'
 
 export function TestException() {
     const click = async () => {
