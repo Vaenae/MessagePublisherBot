@@ -9,7 +9,6 @@ module.exports = nextSourceMaps(
         withSass({
             cssModules: true,
             env: {
-                FIREBASE_CLIENT_CONFIG: process.env.FIREBASE_CLIENT_CONFIG,
                 SENTRY_DSN: process.env.SENTRY_DSN,
                 NOW_GITHUB_COMMIT_SHA: process.env.NOW_GITHUB_COMMIT_SHA
             },

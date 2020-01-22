@@ -7,9 +7,6 @@ import {
     getLastMigrationId,
     Migration
 } from './utils'
-import { createUsersMigration } from './1-create-users'
-
-// var args = process.argv.slice(2)
 
 async function createMigrationTable() {
     const existingTables = await listTables()
@@ -48,9 +45,7 @@ async function initMigrations() {
     return lastMigration
 }
 
-const migrations: Record<number, Migration> = {
-    2: createUsersMigration
-}
+const migrations: Record<number, Migration> = {}
 
 async function runMigrations() {
     const lastMigration = await initMigrations()
