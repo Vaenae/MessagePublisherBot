@@ -1,6 +1,7 @@
 interface Secrets {
-    dbKeyId?: string
-    dbKey?: string
+    dbKeyId: string
+    dbKey: string
+    botToken: string
 }
 
 export interface ServerConfig extends Secrets {
@@ -28,8 +29,9 @@ function getTablePrefix() {
 
 function getSecrets(): Secrets {
     return {
-        dbKeyId: process.env.DB_KEY_ID,
-        dbKey: process.env.DB_KEY
+        dbKeyId: process.env.DB_KEY_ID!,
+        dbKey: process.env.DB_KEY!,
+        botToken: process.env.BOT_TOKEN!
     }
 }
 

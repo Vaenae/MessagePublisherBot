@@ -4,11 +4,12 @@
     "description": "",
     "main": "index.js",
     "scripts": {
-        "build": "npm run migrations && next build && sh ./post-build.sh",
+        "build": "npm run migrations && next build && sh ./post-build.sh && npm run register-webhook",
         "start": "next start",
         "start-db": "java -Djava.library.path=dynamodb/DynamoDBLocal_lib -jar dynamodb/DynamoDBLocal.jar",
         "migrations": "ts-node --project migrations/tsconfig.json migrations/migrate.ts",
-        "lint": "tsc --noEmit && eslint '*/**/*.{js,ts,tsx}' --quiet --fix"
+        "lint": "tsc --noEmit && eslint '*/**/*.{js,ts,tsx}' --quiet --fix",
+        "register-webhook": "ts-node --project scripts/tsconfig.json scripts/register-webhook.ts"
     },
     "keywords": [],
     "author": "",
@@ -25,7 +26,8 @@
         "next": "9.2.0",
         "node-sass": "4.13.1",
         "react": "16.12.0",
-        "react-dom": "16.12.0"
+        "react-dom": "16.12.0",
+        "telegraf": "^3.35.0"
     },
     "devDependencies": {
         "@sentry/cli": "1.49.0",

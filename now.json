@@ -3,7 +3,8 @@
         "DB_KEY_ID": "@db_key_id",
         "DB_KEY": "@db_key",
         "USE_REMOTE_DB": "@use_remote_db",
-        "SENTRY_DSN": "@nextjs-cloud-template.sentry_dsn"
+        "SENTRY_DSN": "@messagepublisherbot.sentry_dsn",
+        "BOT_TOKEN": "@messagepublisherbot.bot_token"
     },
     "build": {
         "env": {
@@ -14,7 +15,9 @@
             "SENTRY_AUTH_TOKEN": "@sentry_auth_token",
             "SENTRY_ORG": "@messagepublisherbot.sentry_org",
             "SENTRY_PROJECT": "@messagepublisherbot.sentry_project",
-            "SENTRY_REPO": "@messagepublisherbot.sentry_repo"
+            "SENTRY_REPO": "@messagepublisherbot.sentry_repo",
+            "BOT_TOKEN": "@messagepublisherbot.bot_token",
+            "URL_PROD": "@messagepublisherbot.url_prod"
         }
     }
 }
