@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import { serverConfig } from '../../../config/config'
 
-export default (req: NextApiRequest, res: NextApiResponse) => {
+export default async (req: NextApiRequest, res: NextApiResponse) => {
     const {
         query: { pid },
         method
@@ -18,5 +18,6 @@ export default (req: NextApiRequest, res: NextApiResponse) => {
     }
     console.log(`Got message with pid ${pid}`)
     console.log(req.body)
-    res.status(200)
+    res.status(200).send('k')
+    return
 }
