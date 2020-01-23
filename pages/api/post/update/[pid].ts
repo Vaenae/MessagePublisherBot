@@ -6,8 +6,9 @@ export default (req: NextApiRequest) => {
         query: { pid }
     } = req
     if (pid !== serverConfig.botToken) {
-        console.error(`Gor message with pid ${pid}`)
+        console.error(`Got message with wrong pid ${pid}`)
         return
     }
+    console.log(`Got message with pid ${pid}`)
     console.log(req.body)
 }

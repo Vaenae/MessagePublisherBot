@@ -3,7 +3,8 @@ module.exports = {
     extends: [
         'plugin:react/recommended', // Uses the recommended rules from @eslint-plugin-react
         'plugin:@typescript-eslint/recommended', // Uses the recommended rules from @typescript-eslint/eslint-plugin
-        'prettier/@typescript-eslint'
+        'prettier/@typescript-eslint',
+        'plugin:prettier/recommended'
     ],
     plugins: ['react-hooks'],
     parserOptions: {
