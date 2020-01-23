@@ -23,5 +23,6 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         return
     }
     await bot.handleUpdate(req.body, res)
+    res.status(200).send('k')
     return
 }
