@@ -3,7 +3,7 @@ import { serverConfig } from '../../../config/config'
 import Telegraf from 'telegraf'
 
 const bot = new Telegraf(serverConfig.botToken)
-bot.on('text', update => console.log(update))
+bot.on('text', update => console.log(update.message))
 bot.command('hello', ctx => ctx.reply('Hello'))
 bot.help(ctx => ctx.reply('Help: needed'))
 
@@ -22,6 +22,6 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         res.status(404)
         return
     }
-    bot.handleUpdate(req.body, res)
+    await bot.handleUpdate(req.body, res)
     return
 }
