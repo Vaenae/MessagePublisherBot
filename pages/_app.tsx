@@ -1,10 +1,10 @@
 import React, { useContext } from 'react'
 import { AppProps } from 'next/app'
 import * as Sentry from '@sentry/node'
-import { clientConfig } from '../config/config'
+import { getClientConfig } from '../config/config'
 
 Sentry.init({
-    dsn: clientConfig.sentryDsn,
+    dsn: getClientConfig().sentryDsn,
     release: process.env.NOW_GITHUB_COMMIT_SHA
 })
 

@@ -35,13 +35,26 @@ function getSecrets(): Secrets {
     }
 }
 
-export const serverConfig: ServerConfig = {
+let serverConfigOverrides: Partial<ServerConfig> = {}
+let clientConfigOverrides: Partial<ClientConfig> = {}
+
+export const setServerConfig = (newConfig: Partial<ServerConfig>) => {
+    serverConfigOverrides = { ...serverConfigOverrides, ...newConfig }
+}
+
+export const setClientConfig = (newConfig: Partial<ClientConfig>) => {
+    clientConfigOverrides = { ...clientConfigOverrides, ...newConfig }
+}
+
+export const getServerConfig = (): ServerConfig => ({
     ...getSecrets(),
     useLocalDb: getUseLocalDb(),
     tablePrefix: getTablePrefix(),
-    region: 'eu-north-1'
-}
+    region: 'eu-north-1',
+    ...serverConfigOverrides
+})
 
-export const clientConfig: ClientConfig = {
-    sentryDsn: process.env.SENTRY_DSN
-}
+export const getClientConfig = (): ClientConfig => ({
+    sentryDsn: process.env.SENTRY_DSN,
+    ...clientConfigOverrides
+})

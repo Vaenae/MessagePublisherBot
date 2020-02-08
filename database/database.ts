@@ -1,5 +1,6 @@
 import AWS from 'aws-sdk'
-import { serverConfig } from '../config/config'
+import { getServerConfig } from '../config/config'
+const serverConfig = getServerConfig()
 
 const localOptions = { region: 'localhost', endpoint: 'http://localhost:8000' }
 const remoteOptions = { region: serverConfig.region }

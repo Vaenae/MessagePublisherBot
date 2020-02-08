@@ -1,6 +1,8 @@
 import { NextApiRequest, NextApiResponse } from 'next'
-import { serverConfig } from '../../../config/config'
+import { getServerConfig } from '../../../config/config'
 import Telegraf from 'telegraf'
+
+const serverConfig = getServerConfig()
 
 const bot = new Telegraf(serverConfig.botToken)
 bot.command('hello', ctx => ctx.reply('Hello'))
@@ -12,16 +14,19 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         query: { pid },
         method
     } = req
-    if (pid !== serverConfig.botToken) {
-        console.error(`Got message with wrong pid ${pid}`)
-        res.status(404)
-        return
-    }
+    console.log('Correct pid would be: ' + serverConfig.botToken)
     if (method !== 'POST') {
         console.error(`Got message with method ${method} ${pid}`)
         res.status(404)
+        res.end()
+        return
+    }
+    if (pid == null || pid !== serverConfig.botToken) {
+        console.error(`Got message with wrong pid ${pid}`)
+        res.status(404)
+        res.end()
         return
     }
     await bot.handleUpdate(req.body, res)
-    return
+    res.end()
 }
