@@ -5,13 +5,12 @@ import {
 } from './migrations/1-create-messages'
 import { IncomingMessage, User } from 'telegraf/typings/telegram-types'
 import { PutItemInputAttributeMap } from 'aws-sdk/clients/dynamodb'
+import { IntString, toInt, toIntString } from '../util/intString'
 
 export async function clearMessagesTable() {
     await deleteTable(messagesTableName)
     await createMessagesMigration.migrate()
 }
-
-type IntString = string
 
 type UserDbItem = {
     M?: {
@@ -27,7 +26,7 @@ function toUserDbItem(user?: User): UserDbItem {
     return user
         ? {
               M: {
-                  id: { N: user.id.toString(10) },
+                  id: { N: toIntString(user.id) },
                   username: { S: user.username },
                   lastName: { S: user.last_name },
                   firstName: { S: user.first_name },
@@ -61,8 +60,6 @@ export interface MessageResult {
     from?: UserResult
 }
 
-const toInt = (str: IntString): number => parseInt(str, 10)
-
 function toUserResult(item: UserDbItem): UserResult | undefined {
     return item.M
         ? {
@@ -85,21 +82,26 @@ function toMessageResult(item: MessageDbItem): MessageResult {
     }
 }
 
-export async function findMessage(chatId: string, messageId: string) {
+export async function findMessage(
+    chatId: string,
+    messageId: string
+): Promise<MessageResult | undefined> {
     const result = await dynamodb
         .getItem({
             TableName: messagesTableName,
             Key: { chatId: { N: chatId }, messageId: { N: messageId } }
         })
         .promise()
-    return toMessageResult(result.Item as MessageDbItem)
+    return result.Item
+        ? toMessageResult(result.Item as MessageDbItem)
+        : undefined
 }
 
 function toMessageDbItem(message: IncomingMessage): MessageDbItem {
     return {
-        chatId: { N: message.chat.id.toString(10) },
-        messageId: { N: message.message_id.toString(10) },
-        date: { N: message.date.toString(10) },
+        chatId: { N: toIntString(message.chat.id) },
+        messageId: { N: toIntString(message.message_id) },
+        date: { N: toIntString(message.date) },
         text: { S: message.text },
         from: toUserDbItem(message.from)
     }

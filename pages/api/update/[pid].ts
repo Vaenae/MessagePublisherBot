@@ -9,7 +9,7 @@ const bot = new Telegraf(serverConfig.botToken)
 bot.command('hello', ctx => ctx.reply('Hello'))
 bot.help(ctx => ctx.reply('Help: needed'))
 bot.on('text', async update => {
-    if (update.message) {
+    if (update.message && update.message.chat.type !== 'private') {
         await saveMessage(update.message)
     }
 })

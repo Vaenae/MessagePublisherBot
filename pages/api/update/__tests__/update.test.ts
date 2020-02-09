@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/camelcase */
 import { setServerConfig } from '../../../../config/config'
 
 const botToken = '123'
@@ -8,14 +9,13 @@ import fetch from 'isomorphic-unfetch'
 import listen from 'test-listen'
 import { apiResolver } from 'next/dist/next-server/server/api-utils'
 import * as update from '../[pid]'
-import { Update } from 'telegraf/typings/telegram-types'
 import {
     clearMessagesTable,
     findMessage,
     MessageResult
 } from '../../../../database/messages'
+import { toIntString } from '../../../../util/intString'
 
-/* eslint-disable @typescript-eslint/camelcase */
 const testUpdate = {
     update_id: 10000,
     message: {
@@ -36,7 +36,6 @@ const testUpdate = {
         text: '/start'
     }
 }
-/* eslint-enable */
 
 describe('/api/update handler', () => {
     let parameters: { pid?: string } = {}
@@ -89,8 +88,8 @@ describe('/api/update handler', () => {
         })
         expect(response.status).toBe(200)
         const dbResult = await findMessage(
-            testUpdate.message.chat.id.toString(10),
-            testUpdate.message.message_id.toString(10)
+            toIntString(testUpdate.message.chat.id),
+            toIntString(testUpdate.message.message_id)
         )
         const expected: MessageResult = {
             chatId: testUpdate.message.chat.id,
@@ -106,5 +105,36 @@ describe('/api/update handler', () => {
             }
         }
         expect(dbResult).toEqual(expected)
+    })
+
+    test("don't save messages from private conversations", async () => {
+        expect.assertions(2)
+        parameters = { pid: botToken }
+        const privateUpdate = {
+            ...testUpdate,
+            update_id: testUpdate.update_id + 1,
+            message: {
+                ...testUpdate.message,
+                message_id: testUpdate.message.message_id + 1,
+                chat: {
+                    id: testUpdate.message.chat.id + 1,
+                    type: 'private'
+                }
+            }
+        }
+        const response = await fetch(baseUrl, {
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json'
+            },
+            method: 'POST',
+            body: JSON.stringify(privateUpdate)
+        })
+        expect(response.status).toBe(200)
+        const dbResult = await findMessage(
+            toIntString(privateUpdate.message.chat.id),
+            toIntString(privateUpdate.message.message_id)
+        )
+        expect(dbResult).toBeUndefined()
     })
 })
