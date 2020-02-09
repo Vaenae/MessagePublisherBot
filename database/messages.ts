@@ -2,7 +2,7 @@ import { deleteTable, dynamodb } from './database'
 import {
     messagesTableName,
     createMessagesMigration
-} from './migrations/1-create-messages'
+} from './migrations/2-create-messages'
 import { IncomingMessage, User } from 'telegraf/typings/telegram-types'
 import { PutItemInputAttributeMap } from 'aws-sdk/clients/dynamodb'
 import { IntString, toInt, toIntString } from '../util/intString'

@@ -1,18 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import { getServerConfig } from '../../../config/config'
-import Telegraf from 'telegraf'
-import { saveMessage } from '../../../database/messages'
-
-const serverConfig = getServerConfig()
-
-const bot = new Telegraf(serverConfig.botToken)
-bot.command('hello', ctx => ctx.reply('Hello'))
-bot.help(ctx => ctx.reply('Help: needed'))
-bot.on('text', async update => {
-    if (update.message && update.message.chat.type !== 'private') {
-        await saveMessage(update.message)
-    }
-})
+import { bot } from '../../../backend/bot'
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
     const {
@@ -25,7 +13,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         res.end()
         return
     }
-    if (pid == null || pid !== serverConfig.botToken) {
+    if (pid == null || pid !== getServerConfig().botToken) {
         console.error(`Got message with wrong pid ${pid}`)
         res.status(404)
         res.end()

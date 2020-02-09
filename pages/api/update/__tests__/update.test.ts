@@ -2,7 +2,7 @@
 import { setServerConfig } from '../../../../config/config'
 
 const botToken = '123'
-setServerConfig({ botToken })
+setServerConfig({ botToken, urlProd: 'localhost' })
 
 import http from 'http'
 import fetch from 'isomorphic-unfetch'
@@ -15,6 +15,7 @@ import {
     MessageResult
 } from '../../../../database/messages'
 import { toIntString } from '../../../../util/intString'
+import { queryChatsByChatId, clearChatsTable } from '../../../../database/chats'
 
 const testUpdate = {
     update_id: 10000,
@@ -49,6 +50,7 @@ describe('/api/update handler', () => {
     let baseUrl: string
     beforeAll(async () => {
         await clearMessagesTable()
+        await clearChatsTable()
         baseUrl = await listen(server)
     })
     afterAll(() => {
@@ -136,5 +138,36 @@ describe('/api/update handler', () => {
             toIntString(privateUpdate.message.message_id)
         )
         expect(dbResult).toBeUndefined()
+    })
+
+    test('/publish starts publishing the channel', async () => {
+        expect.assertions(2)
+        parameters = { pid: botToken }
+        const publishUpdate = {
+            ...testUpdate,
+            update_id: testUpdate.update_id + 2,
+            message: {
+                ...testUpdate.message,
+                message_id: testUpdate.message.message_id + 2,
+                chat: {
+                    ...testUpdate.message.chat,
+                    id: testUpdate.message.chat.id + 2
+                },
+                text: '/publish'
+            }
+        }
+        const response = await fetch(baseUrl, {
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json'
+            },
+            method: 'POST',
+            body: JSON.stringify(publishUpdate)
+        })
+        expect(response.status).toBe(200)
+        const dbResults = await queryChatsByChatId(
+            publishUpdate.message.chat.id
+        )
+        expect(dbResults.length).toEqual(1)
     })
 })

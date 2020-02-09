@@ -8,6 +8,7 @@ export interface ServerConfig extends Secrets {
     tablePrefix: string
     useLocalDb: boolean
     region: string
+    urlProd: string
 }
 
 export interface ClientConfig {
@@ -51,6 +52,7 @@ export const getServerConfig = (): ServerConfig => ({
     useLocalDb: getUseLocalDb(),
     tablePrefix: getTablePrefix(),
     region: 'eu-north-1',
+    urlProd: process.env.URL_PROD!,
     ...serverConfigOverrides
 })
 

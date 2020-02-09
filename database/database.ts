@@ -47,6 +47,12 @@ export async function createTable(table: CreateTableInput) {
 }
 
 export async function deleteTable(tableName: string) {
-    await dynamodb.deleteTable({ TableName: tableName }).promise()
-    await dynamodb.waitFor('tableNotExists', { TableName: tableName }).promise()
+    try {
+        await dynamodb.deleteTable({ TableName: tableName }).promise()
+        await dynamodb
+            .waitFor('tableNotExists', { TableName: tableName })
+            .promise()
+    } catch (error) {
+        console.error(error)
+    }
 }

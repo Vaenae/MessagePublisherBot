@@ -5,8 +5,9 @@ import {
     getLastMigrationId,
     Migration
 } from './utils'
-import { createMessagesMigration } from './1-create-messages'
+import { createMessagesMigration } from './2-create-messages'
 import { listTables, createTable } from '../database'
+import { createChatsMigration } from './3-create-chat'
 
 async function createMigrationTable() {
     const existingTables = await listTables()
@@ -46,7 +47,8 @@ async function initMigrations() {
 }
 
 const migrations: Record<number, Migration> = {
-    2: createMessagesMigration
+    2: createMessagesMigration,
+    3: createChatsMigration
 }
 
 async function runMigrations() {
