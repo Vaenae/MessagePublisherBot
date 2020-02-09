@@ -15,7 +15,11 @@ import {
     MessageResult
 } from '../../../../database/messages'
 import { toIntString } from '../../../../util/intString'
-import { queryChatsByChatId, clearChatsTable } from '../../../../database/chats'
+import {
+    queryChatsByChatId,
+    clearChatsTable,
+    saveChat
+} from '../../../../database/chats'
 
 const testUpdate = {
     update_id: 10000,
@@ -169,5 +173,42 @@ describe('/api/update handler', () => {
             publishUpdate.message.chat.id
         )
         expect(dbResults.length).toEqual(1)
+    })
+
+    test('/unpublish stops publishing the channel', async () => {
+        expect.assertions(2)
+        parameters = { pid: botToken }
+
+        const unpublishUpdate = {
+            ...testUpdate,
+            update_id: testUpdate.update_id + 3,
+            message: {
+                ...testUpdate.message,
+                message_id: testUpdate.message.message_id + 3,
+                chat: {
+                    ...testUpdate.message.chat,
+                    id: testUpdate.message.chat.id + 3
+                },
+                text: '/unpublish'
+            }
+        }
+
+        const publishId = 'testUnpublish'
+        await saveChat(publishId, 0, unpublishUpdate.message.chat)
+
+        const response = await fetch(baseUrl, {
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json'
+            },
+            method: 'POST',
+            body: JSON.stringify(unpublishUpdate)
+        })
+
+        expect(response.status).toBe(200)
+        const dbResults = await queryChatsByChatId(
+            unpublishUpdate.message.chat.id
+        )
+        expect(dbResults.length).toEqual(0)
     })
 })

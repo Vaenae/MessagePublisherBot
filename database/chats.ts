@@ -66,7 +66,7 @@ export async function findChat(
     const result = await dynamodb
         .getItem({
             TableName: chatsTableName,
-            Key: { publishId: { S: publishId } }
+            Key: { chatPublishId: { S: publishId } }
         })
         .promise()
     return result.Item ? toChatResult(result.Item as ChatDbItem) : undefined
@@ -86,4 +86,17 @@ export async function queryChatsByChatId(
     return result.Items
         ? result.Items.map(i => toChatResult(i as ChatDbItem))
         : []
+}
+
+export async function deleteChats(chatPublishIds: ReadonlyArray<string>) {
+    return await Promise.all(
+        chatPublishIds.map(id =>
+            dynamodb
+                .deleteItem({
+                    TableName: chatsTableName,
+                    Key: { chatPublishId: { S: id } }
+                })
+                .promise()
+        )
+    )
 }
