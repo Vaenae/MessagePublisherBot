@@ -1,27 +1,10 @@
-import { CreateTableInput } from 'aws-sdk/clients/dynamodb'
 import { PromiseResult } from 'aws-sdk/lib/request'
-import { getServerConfig } from '../config/config'
-import { dynamodb } from '../database/database'
+import { getServerConfig } from '../../config/config'
+import { dynamodb } from '../database'
 
 export interface Migration {
     name: string
     migrate: () => Promise<void>
-}
-
-export async function listTables() {
-    return await dynamodb
-        .listTables()
-        .promise()
-        .then(data => data.TableNames || [])
-}
-
-export async function createTable(table: CreateTableInput) {
-    const result = await dynamodb.createTable(table).promise()
-    console.log(result.TableDescription)
-    await dynamodb
-        .waitFor('tableExists', { TableName: table.TableName })
-        .promise()
-    return result
 }
 
 export const migrationTableName = `${getServerConfig().tablePrefix}-migrations`

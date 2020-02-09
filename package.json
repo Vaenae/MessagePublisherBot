@@ -7,7 +7,7 @@
         "build": "npm run migrations && next build && sh ./post-build.sh && npm run register-webhook",
         "start": "next start",
         "start-db": "java -Djava.library.path=dynamodb/DynamoDBLocal_lib -jar dynamodb/DynamoDBLocal.jar",
-        "migrations": "ts-node --project migrations/tsconfig.json migrations/migrate.ts",
+        "migrations": "ts-node --project database/migrations/tsconfig.json database/migrations/migrate.ts",
         "lint": "tsc --noEmit && eslint '*/**/*.{js,ts,tsx}' --quiet --fix",
         "register-webhook": "ts-node --project scripts/tsconfig.json scripts/register-webhook.ts",
         "test": "jest"

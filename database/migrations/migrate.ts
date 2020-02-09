@@ -1,12 +1,12 @@
 import {
-    listTables,
-    createTable,
     migrationTableName,
     writeMigrationInfo,
     listMigrations,
     getLastMigrationId,
     Migration
 } from './utils'
+import { createMessagesMigration } from './1-create-messages'
+import { listTables, createTable } from '../database'
 
 async function createMigrationTable() {
     const existingTables = await listTables()
@@ -45,7 +45,9 @@ async function initMigrations() {
     return lastMigration
 }
 
-const migrations: Record<number, Migration> = {}
+const migrations: Record<number, Migration> = {
+    2: createMessagesMigration
+}
 
 async function runMigrations() {
     const lastMigration = await initMigrations()

@@ -9,9 +9,14 @@ import listen from 'test-listen'
 import { apiResolver } from 'next/dist/next-server/server/api-utils'
 import * as update from '../[pid]'
 import { Update } from 'telegraf/typings/telegram-types'
+import {
+    clearMessagesTable,
+    findMessage,
+    MessageResult
+} from '../../../../database/messages'
 
 /* eslint-disable @typescript-eslint/camelcase */
-const testMessage: Update = {
+const testUpdate = {
     update_id: 10000,
     message: {
         date: 1441645532,
@@ -44,6 +49,7 @@ describe('/api/update handler', () => {
     const server = http.createServer(requestHandler)
     let baseUrl: string
     beforeAll(async () => {
+        await clearMessagesTable()
         baseUrl = await listen(server)
     })
     afterAll(() => {
@@ -70,8 +76,8 @@ describe('/api/update handler', () => {
         expect(response.status).toBe(404)
     })
 
-    test('responds 200 to a valid post', async () => {
-        expect.assertions(1)
+    test('saves a message to the db', async () => {
+        expect.assertions(2)
         parameters = { pid: botToken }
         const response = await fetch(baseUrl, {
             headers: {
@@ -79,8 +85,26 @@ describe('/api/update handler', () => {
                 'Content-Type': 'application/json'
             },
             method: 'POST',
-            body: JSON.stringify(testMessage)
+            body: JSON.stringify(testUpdate)
         })
         expect(response.status).toBe(200)
+        const dbResult = await findMessage(
+            testUpdate.message.chat.id.toString(10),
+            testUpdate.message.message_id.toString(10)
+        )
+        const expected: MessageResult = {
+            chatId: testUpdate.message.chat.id,
+            messageId: testUpdate.message.message_id,
+            date: testUpdate.message.date,
+            text: testUpdate.message.text,
+            from: {
+                id: testUpdate.message.from.id,
+                username: testUpdate.message.from.username,
+                lastName: testUpdate.message.from.last_name,
+                firstName: testUpdate.message.from.first_name,
+                isBot: testUpdate.message.from.is_bot
+            }
+        }
+        expect(dbResult).toEqual(expected)
     })
 })
