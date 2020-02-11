@@ -9,17 +9,9 @@ import fetch from 'isomorphic-unfetch'
 import listen from 'test-listen'
 import { apiResolver } from 'next/dist/next-server/server/api-utils'
 import * as update from '../[pid]'
-import {
-    clearMessagesTable,
-    findMessage,
-    MessageResult
-} from '../../../../database/messages'
+import { findMessage, MessageResult } from '../../../../database/messages'
 import { toIntString } from '../../../../util/intString'
-import {
-    queryChatsByChatId,
-    clearChatsTable,
-    saveChat
-} from '../../../../database/chats'
+import { queryChatsByChatId, saveChat } from '../../../../database/chats'
 
 const testUpdate = {
     update_id: 10000,

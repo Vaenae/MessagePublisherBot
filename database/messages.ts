@@ -4,7 +4,10 @@ import {
     createMessagesMigration
 } from './migrations/2-create-messages'
 import { IncomingMessage, User } from 'telegraf/typings/telegram-types'
-import { PutItemInputAttributeMap } from 'aws-sdk/clients/dynamodb'
+import {
+    PutItemInputAttributeMap,
+    WriteRequest
+} from 'aws-sdk/clients/dynamodb'
 import { IntString, toInt, toIntString } from '../util/intString'
 
 export async function clearMessagesTable() {
@@ -97,6 +100,21 @@ export async function findMessage(
         : undefined
 }
 
+export async function queryMessagesByChatId(
+    chatId: number
+): Promise<MessageResult[]> {
+    const result = await dynamodb
+        .query({
+            TableName: messagesTableName,
+            KeyConditionExpression: 'chatId = :id',
+            ExpressionAttributeValues: { ':id': { N: toIntString(chatId) } }
+        })
+        .promise()
+    return result.Items
+        ? result.Items.map(i => toMessageResult(i as MessageDbItem))
+        : []
+}
+
 function toMessageDbItem(message: IncomingMessage): MessageDbItem {
     return {
         chatId: { N: toIntString(message.chat.id) },
@@ -113,6 +131,21 @@ export async function saveMessage(message: IncomingMessage) {
         .putItem({
             TableName: messagesTableName,
             Item: messagedbItem
+        })
+        .promise()
+}
+
+export async function saveMessages(messages: ReadonlyArray<IncomingMessage>) {
+    const writeRequests: WriteRequest[] = messages.map(message => ({
+        PutRequest: {
+            Item: toMessageDbItem(message)
+        }
+    }))
+    return await dynamodb
+        .batchWriteItem({
+            RequestItems: {
+                [messagesTableName]: writeRequests
+            }
         })
         .promise()
 }
