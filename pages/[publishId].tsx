@@ -2,20 +2,31 @@ import React, { Fragment } from 'react'
 import fetch from 'isomorphic-unfetch'
 import { MessageResult } from '../database/messages'
 import { NextPageContext } from 'next'
+import { Table } from '../components/bulma/elements/Table'
 
 interface PublishedProps {
     messages?: ReadonlyArray<MessageResult>
 }
 
+function showDateTime(timestamp: number) {
+    const date = new Date(timestamp * 1000)
+    return date.toLocaleString()
+}
+
+const columns = ['', '', '', '']
+
 const Published = (props: PublishedProps) => {
     const { messages } = props
-    return (
-        <Fragment>
-            {(messages || []).map(message => (
-                <div key={message.messageId}>{message.text}</div>
-            ))}
-        </Fragment>
-    )
+    const rows = (messages || []).map(m => [
+        <span key={0}>{showDateTime(m.date)}</span>,
+        <span key={1}>
+            <strong>
+                {m.from?.firstName} {m.from?.lastName}:
+            </strong>
+        </span>,
+        <span key={2}>{m.text || ''}</span>
+    ])
+    return <Table header={columns} rows={rows} />
 }
 
 Published.getInitialProps = async (
