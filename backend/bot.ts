@@ -57,7 +57,7 @@ const unpublish = async (ctx: ContextMessageUpdate) => {
         return
     }
     await deleteChats(queryResults.map(result => result.chatPublishId))
-    await ctx.reply('Chat unpublishedW')
+    await ctx.reply('Chat unpublished')
 }
 
 bot.on('text', async update => {

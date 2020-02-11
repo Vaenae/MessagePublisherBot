@@ -4,7 +4,8 @@
         "DB_KEY": "@db_key",
         "USE_REMOTE_DB": "@use_remote_db",
         "SENTRY_DSN": "@messagepublisherbot.sentry_dsn",
-        "BOT_TOKEN": "@messagepublisherbot.bot_token"
+        "BOT_TOKEN": "@messagepublisherbot.bot_token",
+        "URL_PROD": "@messagepublisherbot.url_prod"
     },
     "build": {
         "env": {
