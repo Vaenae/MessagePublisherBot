@@ -72,6 +72,7 @@ bot.on('text', async update => {
                 return
             }
             default: {
+                console.log(update.message)
                 if (update.message.chat.type !== 'private') {
                     await saveMessage(update.message)
                 }
