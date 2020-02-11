@@ -53,8 +53,6 @@ describe('/api/update handler', () => {
     const server = http.createServer(requestHandler)
     let baseUrl: string
     beforeAll(async () => {
-        await clearMessagesTable()
-        await clearChatsTable()
         baseUrl = await listen(server)
     })
     afterAll(() => {

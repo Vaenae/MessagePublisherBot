@@ -10,7 +10,8 @@
         "migrations": "ts-node --project database/migrations/tsconfig.json database/migrations/migrate.ts",
         "lint": "tsc --noEmit && eslint '*/**/*.{js,ts,tsx}' --quiet --fix",
         "register-webhook": "ts-node --project scripts/tsconfig.json scripts/register-webhook.ts",
-        "test": "jest"
+        "clear-database": "ts-node --project scripts/tsconfig.json scripts/clear-database.ts",
+        "test": "npm run clear-database && jest"
     },
     "keywords": [],
     "author": "",
@@ -35,7 +36,7 @@
         "@types/jest": "25.1.2",
         "@types/node": "13.7.0",
         "@types/react": "16.9.19",
-        "@types/test-listen": "^1.1.0",
+        "@types/test-listen": "1.1.0",
         "@typescript-eslint/eslint-plugin": "2.19.0",
         "@typescript-eslint/parser": "2.19.0",
         "@zeit/next-source-maps": "0.0.4-canary.1",
