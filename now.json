@@ -1,4 +1,5 @@
 {
+    "regions": ["arn1"],
     "env": {
         "DB_KEY_ID": "@db_key_id",
         "DB_KEY": "@db_key",
