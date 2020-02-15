@@ -19,6 +19,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         res.end()
         return
     }
+    console.log(req.body)
     await bot.handleUpdate(req.body, res)
     res.end()
 }
