@@ -18,8 +18,8 @@ export async function clearMessagesTable() {
 type UserDbItem = {
     M?: {
         id: { N: IntString }
-        username: { S?: string }
-        lastName: { S?: string }
+        username?: { S: string }
+        lastName?: { S: string }
         firstName: { S: string }
         isBot: { BOOL: boolean }
     }
@@ -30,8 +30,8 @@ function toUserDbItem(user?: User): UserDbItem {
         ? {
               M: {
                   id: { N: toIntString(user.id) },
-                  username: { S: user.username },
-                  lastName: { S: user.last_name },
+                  username: user.username ? { S: user.username } : undefined,
+                  lastName: user.last_name ? { S: user.last_name } : undefined,
                   firstName: { S: user.first_name },
                   isBot: { BOOL: user.is_bot }
               }
@@ -43,7 +43,7 @@ type MessageDbItem = {
     chatId: { N: IntString }
     messageId: { N: IntString }
     date: { N: IntString }
-    text: { S?: string }
+    text?: { S: string }
     from: UserDbItem
 }
 
@@ -120,13 +120,13 @@ function toMessageDbItem(message: IncomingMessage): MessageDbItem {
         chatId: { N: toIntString(message.chat.id) },
         messageId: { N: toIntString(message.message_id) },
         date: { N: toIntString(message.date) },
-        text: { S: message.text },
+        text: message.text ? { S: message.text } : undefined,
         from: toUserDbItem(message.from)
     }
 }
 
 export async function saveMessage(message: IncomingMessage) {
-    const messagedbItem: PutItemInputAttributeMap = toMessageDbItem(message)
+    const messagedbItem = toMessageDbItem(message) as PutItemInputAttributeMap
     return await dynamodb
         .putItem({
             TableName: messagesTableName,
@@ -138,7 +138,7 @@ export async function saveMessage(message: IncomingMessage) {
 export async function saveMessages(messages: ReadonlyArray<IncomingMessage>) {
     const writeRequests: WriteRequest[] = messages.map(message => ({
         PutRequest: {
-            Item: toMessageDbItem(message)
+            Item: toMessageDbItem(message) as PutItemInputAttributeMap
         }
     }))
     return await dynamodb

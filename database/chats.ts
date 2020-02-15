@@ -5,6 +5,7 @@ import {
 import { deleteTable, dynamodb } from './database'
 import { IntString, toIntString, toInt } from '../util/intString'
 import { Chat } from 'telegraf/typings/telegram-types'
+import { PutItemInputAttributeMap } from 'aws-sdk/clients/dynamodb'
 
 export async function clearChatsTable() {
     await deleteTable(chatsTableName)
@@ -14,7 +15,7 @@ export async function clearChatsTable() {
 type ChatDbItem = {
     chatPublishId: { S: string }
     chatId: { N: IntString }
-    title: { S?: string }
+    title?: { S: string }
     firstMessage: { N: IntString }
 }
 
@@ -33,7 +34,7 @@ function toChatDbItem(
     return {
         chatPublishId: { S: publishId },
         chatId: { N: toIntString(chat.id) },
-        title: { S: chat.title },
+        title: chat.title ? { S: chat.title } : undefined,
         firstMessage: { N: toIntString(firstMessage) }
     }
 }
@@ -42,7 +43,7 @@ function toChatResult(dbItem: ChatDbItem): ChatResult {
     return {
         chatPublishId: dbItem.chatPublishId.S,
         chatId: toInt(dbItem.chatId.N),
-        title: dbItem.title.S,
+        title: dbItem.title?.S,
         firstMessage: toInt(dbItem.firstMessage.N)
     }
 }
@@ -55,7 +56,11 @@ export async function saveChat(
     return await dynamodb
         .putItem({
             TableName: chatsTableName,
-            Item: toChatDbItem(publishId, firstMessage, chat)
+            Item: toChatDbItem(
+                publishId,
+                firstMessage,
+                chat
+            ) as PutItemInputAttributeMap
         })
         .promise()
 }

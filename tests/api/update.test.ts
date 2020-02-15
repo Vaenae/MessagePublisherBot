@@ -12,6 +12,7 @@ import * as update from '../../pages/api/update/[pid]'
 import { findMessage, MessageResult } from '../../database/messages'
 import { toIntString } from '../../util/intString'
 import { queryChatsByChatId, saveChat } from '../../database/chats'
+import { Update, Message, User } from 'telegraf/typings/telegram-types'
 
 const testUpdate = {
     update_id: 10000,
@@ -71,7 +72,11 @@ describe('/api/update handler', () => {
         expect(response.status).toBe(404)
     })
 
-    test('saves a message to the db', async () => {
+    const expectToSave = (
+        update: Required<Pick<Update, 'update_id' | 'message'>> & {
+            message: { from: User }
+        }
+    ) => async () => {
         expect.assertions(2)
         parameters = { pid: botToken }
         const response = await fetch(baseUrl, {
@@ -80,28 +85,30 @@ describe('/api/update handler', () => {
                 'Content-Type': 'application/json'
             },
             method: 'POST',
-            body: JSON.stringify(testUpdate)
+            body: JSON.stringify(update)
         })
         expect(response.status).toBe(200)
         const dbResult = await findMessage(
-            toIntString(testUpdate.message.chat.id),
-            toIntString(testUpdate.message.message_id)
+            toIntString(update.message.chat.id),
+            toIntString(update.message.message_id)
         )
         const expected: MessageResult = {
-            chatId: testUpdate.message.chat.id,
-            messageId: testUpdate.message.message_id,
-            date: testUpdate.message.date,
-            text: testUpdate.message.text,
+            chatId: update.message.chat.id,
+            messageId: update.message.message_id,
+            date: update.message.date,
+            text: update.message.text,
             from: {
-                id: testUpdate.message.from.id,
-                username: testUpdate.message.from.username,
-                lastName: testUpdate.message.from.last_name,
-                firstName: testUpdate.message.from.first_name,
-                isBot: testUpdate.message.from.is_bot
+                id: update.message.from.id,
+                username: update.message.from.username,
+                lastName: update.message.from.last_name,
+                firstName: update.message.from.first_name,
+                isBot: update.message.from.is_bot
             }
         }
         expect(dbResult).toEqual(expected)
-    })
+    }
+
+    test('saves a message to the db', expectToSave(testUpdate))
 
     test("don't save messages from private conversations", async () => {
         expect.assertions(2)
@@ -201,4 +208,21 @@ describe('/api/update handler', () => {
         )
         expect(dbResults.length).toEqual(0)
     })
+
+    test(
+        'saves a message without an username',
+        expectToSave({
+            ...testUpdate,
+            update_id: testUpdate.update_id + 4,
+            message: {
+                ...testUpdate.message,
+                message_id: testUpdate.message.message_id + 4,
+                from: {
+                    ...testUpdate.message.from,
+                    username: undefined,
+                    last_name: undefined
+                }
+            }
+        })
+    )
 })
