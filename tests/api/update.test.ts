@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/camelcase */
-import { setServerConfig } from '../../../../config/config'
+import { setServerConfig } from '../../config/config'
 
 const botToken = '123'
 setServerConfig({ botToken, urlProd: 'localhost' })
@@ -8,10 +8,10 @@ import http from 'http'
 import fetch from 'isomorphic-unfetch'
 import listen from 'test-listen'
 import { apiResolver } from 'next/dist/next-server/server/api-utils'
-import * as update from '../[pid]'
-import { findMessage, MessageResult } from '../../../../database/messages'
-import { toIntString } from '../../../../util/intString'
-import { queryChatsByChatId, saveChat } from '../../../../database/chats'
+import * as update from '../../pages/api/update/[pid]'
+import { findMessage, MessageResult } from '../../database/messages'
+import { toIntString } from '../../util/intString'
+import { queryChatsByChatId, saveChat } from '../../database/chats'
 
 const testUpdate = {
     update_id: 10000,

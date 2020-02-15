@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/camelcase */
-import { setServerConfig } from '../../../../config/config'
+import { setServerConfig } from '../../config/config'
 
 const botToken = '123'
 setServerConfig({ botToken, urlProd: 'localhost' })
@@ -8,9 +8,9 @@ import http from 'http'
 import fetch from 'isomorphic-unfetch'
 import listen from 'test-listen'
 import { apiResolver } from 'next/dist/next-server/server/api-utils'
-import * as messages from '../[publishId]'
-import { saveMessages, MessageResult } from '../../../../database/messages'
-import { saveChat } from '../../../../database/chats'
+import * as messages from '../../pages/api/messages/[publishId]'
+import { saveMessages, MessageResult } from '../../database/messages'
+import { saveChat } from '../../database/chats'
 import { Chat, Message } from 'telegraf/typings/telegram-types'
 
 const testPublishId = 'test'
