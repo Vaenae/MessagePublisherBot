@@ -1,15 +1,17 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import { findChat } from '../../../database/chats'
 import { queryMessagesByChatId } from '../../../database/messages'
-// import { getServerConfig } from '../../../config/config'
+import { IntString, toInt } from '../../../util/intString'
+import { getFirstIfArray } from '../../../util/array'
 
 export interface MessagesQuery {
     publishId?: string
+    max?: IntString
 }
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
     const {
-        query: { publishId },
+        query: { publishId, max },
         method
     } = req
     if (method !== 'GET') {
@@ -24,14 +26,17 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         res.end()
         return
     }
-    const id = Array.isArray(publishId) ? publishId[0] : publishId
+    const id = getFirstIfArray(publishId)
     const chat = await findChat(id)
     if (chat == null) {
         res.status(404)
         res.end()
         return
     }
-    const results = await queryMessagesByChatId(chat.chatId)
+    const results = await queryMessagesByChatId(
+        chat.chatId,
+        max ? toInt(getFirstIfArray(max)) : undefined
+    )
     res.status(200)
     res.setHeader('Content-Type', 'application/json')
     res.end(JSON.stringify(results))

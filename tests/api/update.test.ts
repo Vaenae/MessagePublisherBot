@@ -12,7 +12,7 @@ import * as update from '../../pages/api/update/[pid]'
 import { findMessage, MessageResult } from '../../database/messages'
 import { toIntString } from '../../util/intString'
 import { queryChatsByChatId, saveChat } from '../../database/chats'
-import { Update, Message, User } from 'telegraf/typings/telegram-types'
+import { Update, User } from 'telegraf/typings/telegram-types'
 
 const testUpdate = {
     update_id: 10000,

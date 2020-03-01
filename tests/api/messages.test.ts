@@ -12,6 +12,7 @@ import * as messages from '../../pages/api/messages/[publishId]'
 import { saveMessages, MessageResult } from '../../database/messages'
 import { saveChat } from '../../database/chats'
 import { Chat, Message } from 'telegraf/typings/telegram-types'
+import reverse from 'lodash/fp/reverse'
 
 const testPublishId = 'test'
 const testChat: Chat = {
@@ -20,7 +21,30 @@ const testChat: Chat = {
     type: 'supergroup'
 }
 
-const testMessages: Message[] = [
+function* generateMessage(totalMessages: number) {
+    for (let i = 1; i <= totalMessages; i++) {
+        yield {
+            date: 1441644540 + i,
+            chat: {
+                id: testChat.id,
+                title: 'Test chat',
+                type: 'supergroup'
+            },
+            message_id: i,
+            from: {
+                last_name: 'Marx',
+                id: -535,
+                first_name: 'Karl',
+                username: 'kmarx',
+                is_bot: false
+            },
+            text: `Test message ${i}`
+        }
+    }
+}
+
+const testMessages: ReadonlyArray<Message> = [
+    ...generateMessage(100),
     {
         date: 1441645532,
         chat: {
@@ -28,7 +52,7 @@ const testMessages: Message[] = [
             title: 'Test chat',
             type: 'supergroup'
         },
-        message_id: 1,
+        message_id: 101,
         from: {
             last_name: 'Test Lastname',
             id: 55,
@@ -45,7 +69,7 @@ const testMessages: Message[] = [
             title: 'Test chat',
             type: 'supergroup'
         },
-        message_id: 2,
+        message_id: 102,
         from: {
             last_name: 'Mark',
             id: 41,
@@ -62,7 +86,7 @@ const testMessages: Message[] = [
             title: 'Test chat',
             type: 'supergroup'
         },
-        message_id: 3,
+        message_id: 103,
         from: {
             last_name: 'Jordan',
             id: 9663,
@@ -74,8 +98,24 @@ const testMessages: Message[] = [
     }
 ]
 
+const messageToMessageResult = (message: Message): MessageResult => ({
+    chatId: message.chat.id,
+    messageId: message.message_id,
+    date: message.date,
+    text: message.text,
+    from: message.from
+        ? {
+              id: message.from.id,
+              username: message.from.username,
+              lastName: message.from.last_name,
+              firstName: message.from.first_name,
+              isBot: message.from.is_bot
+          }
+        : undefined
+})
+
 describe('/api/messages handler', () => {
-    const parameters: messages.MessagesQuery = { publishId: testPublishId }
+    let parameters: messages.MessagesQuery
     const requestHandler = (
         req: http.IncomingMessage,
         res: http.ServerResponse
@@ -107,23 +147,24 @@ describe('/api/messages handler', () => {
 
     test('gets the messages with the publish id', async () => {
         expect.assertions(2)
+        parameters = { publishId: testPublishId }
         const response = await fetch(baseUrl)
         expect(response.status).toBe(200)
-        const expected: MessageResult[] = testMessages.map(m => ({
-            chatId: m.chat.id,
-            messageId: m.message_id,
-            date: m.date,
-            text: m.text,
-            from: m.from
-                ? {
-                      id: m.from.id,
-                      username: m.from.username,
-                      lastName: m.from.last_name,
-                      firstName: m.from.first_name,
-                      isBot: m.from.is_bot
-                  }
-                : undefined
-        }))
+        const expected: MessageResult[] = reverse(testMessages).map(
+            messageToMessageResult
+        )
+        const data = await response.json()
+        expect(data).toStrictEqual(expected)
+    })
+
+    test('gets the last 5 messages', async () => {
+        expect.assertions(2)
+        parameters = { publishId: testPublishId, max: '5' }
+        const response = await fetch(baseUrl)
+        expect(response.status).toBe(200)
+        const expected: MessageResult[] = reverse(testMessages)
+            .slice(0, 5)
+            .map(messageToMessageResult)
         const data = await response.json()
         expect(data).toStrictEqual(expected)
     })

@@ -2,13 +2,13 @@ import Telegraf, { ContextMessageUpdate } from 'telegraf'
 import { getServerConfig } from '../config/config'
 import { saveMessage } from '../database/messages'
 import { queryChatsByChatId, saveChat, deleteChats } from '../database/chats'
-import * as crypto from 'crypto'
+import { randomBytes } from 'crypto'
 
 const publishUrl = (publishId: string): string =>
     `${getServerConfig().urlProd}/${publishId}`
 
 function createRandomId(): string {
-    const arr = crypto.randomBytes(20)
+    const arr = randomBytes(20)
     return arr.toString('hex')
 }
 
@@ -72,7 +72,6 @@ bot.on('text', async update => {
                 return
             }
             default: {
-                console.log(update.message)
                 if (update.message.chat.type !== 'private') {
                     await saveMessage(update.message)
                 }

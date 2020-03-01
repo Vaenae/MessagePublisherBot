@@ -9,6 +9,7 @@ import {
     WriteRequest
 } from 'aws-sdk/clients/dynamodb'
 import { IntString, toInt, toIntString } from '../util/intString'
+import chunk from 'lodash/fp/chunk'
 
 export async function clearMessagesTable() {
     await deleteTable(messagesTableName)
@@ -101,13 +102,17 @@ export async function findMessage(
 }
 
 export async function queryMessagesByChatId(
-    chatId: number
+    chatId: number,
+    max?: number
 ): Promise<MessageResult[]> {
+    const queryOptions = max ? { Limit: max } : {}
     const result = await dynamodb
         .query({
             TableName: messagesTableName,
             KeyConditionExpression: 'chatId = :id',
-            ExpressionAttributeValues: { ':id': { N: toIntString(chatId) } }
+            ExpressionAttributeValues: { ':id': { N: toIntString(chatId) } },
+            ScanIndexForward: false,
+            ...queryOptions
         })
         .promise()
     return result.Items
@@ -136,16 +141,22 @@ export async function saveMessage(message: IncomingMessage) {
 }
 
 export async function saveMessages(messages: ReadonlyArray<IncomingMessage>) {
-    const writeRequests: WriteRequest[] = messages.map(message => ({
-        PutRequest: {
-            Item: toMessageDbItem(message) as PutItemInputAttributeMap
-        }
-    }))
-    return await dynamodb
-        .batchWriteItem({
-            RequestItems: {
-                [messagesTableName]: writeRequests
+    const writeRequests: WriteRequest[][] = chunk(20)(
+        messages.map(message => ({
+            PutRequest: {
+                Item: toMessageDbItem(message) as PutItemInputAttributeMap
             }
-        })
-        .promise()
+        }))
+    )
+    return await Promise.all(
+        writeRequests.map(reqs =>
+            dynamodb
+                .batchWriteItem({
+                    RequestItems: {
+                        [messagesTableName]: reqs
+                    }
+                })
+                .promise()
+        )
+    )
 }
