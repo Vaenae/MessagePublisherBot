@@ -4,15 +4,13 @@ import { setServerConfig } from '../../config/config'
 const botToken = '123'
 setServerConfig({ botToken, urlProd: 'localhost' })
 
-import http from 'http'
-import fetch from 'isomorphic-unfetch'
-import listen from 'test-listen'
-import { apiResolver } from 'next/dist/next-server/server/api-utils'
-import * as update from '../../pages/api/update/[pid]'
+import update from '../../pages/api/update/[pid]'
 import { findMessage, MessageResult } from '../../database/messages'
 import { toIntString } from '../../util/intString'
 import { queryChatsByChatId, saveChat } from '../../database/chats'
 import { Update, User } from 'telegraf/typings/telegram-types'
+import { createMocks, RequestMethod } from 'node-mocks-http'
+import { NextApiRequest, NextApiResponse } from 'next'
 
 const testUpdate = {
     update_id: 10000,
@@ -35,59 +33,41 @@ const testUpdate = {
     }
 }
 
+type UpdateBody = Required<Pick<Update, 'update_id' | 'message'>> & {
+    message: { from: User }
+}
+
+const runUpdate = async (
+    pid: string,
+    body: UpdateBody,
+    method: RequestMethod = 'POST'
+) => {
+    const { req, res } = createMocks<NextApiRequest, NextApiResponse>({
+        query: { pid },
+        method,
+        body
+    })
+    await update(req, res)
+    return res
+}
+
 describe('/api/update handler', () => {
-    let parameters: { pid?: string } = {}
-    const requestHandler = (
-        req: http.IncomingMessage,
-        res: http.ServerResponse
-    ) => {
-        return apiResolver(req, res, parameters, update)
-    }
-    const server = http.createServer(requestHandler)
-    let baseUrl: string
-    beforeAll(async () => {
-        baseUrl = await listen(server)
-    })
-    afterAll(() => {
-        server.close()
-    })
     test('responds 404 to GET', async () => {
         expect.assertions(1)
-        parameters = { pid: botToken }
-        const response = await fetch(baseUrl)
-        expect(response.status).toBe(404)
+        const response = await runUpdate(botToken, testUpdate, 'GET')
+        expect(response._getStatusCode()).toBe(404)
     })
 
     test('responds 404 to POST with bad id', async () => {
         expect.assertions(1)
-        parameters = { pid: '1' }
-        const response = await fetch(baseUrl, {
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json'
-            },
-            method: 'POST',
-            body: JSON.stringify({ a: 1, b: 2 })
-        })
-        expect(response.status).toBe(404)
+        const response = await runUpdate('1', testUpdate)
+        expect(response._getStatusCode()).toBe(404)
     })
 
-    const expectToSave = (
-        update: Required<Pick<Update, 'update_id' | 'message'>> & {
-            message: { from: User }
-        }
-    ) => async () => {
+    const expectToSave = (update: UpdateBody) => async () => {
         expect.assertions(2)
-        parameters = { pid: botToken }
-        const response = await fetch(baseUrl, {
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json'
-            },
-            method: 'POST',
-            body: JSON.stringify(update)
-        })
-        expect(response.status).toBe(200)
+        const response = await runUpdate(botToken, update)
+        expect(response._getStatusCode()).toBe(200)
         const dbResult = await findMessage(
             toIntString(update.message.chat.id),
             toIntString(update.message.message_id)
@@ -112,7 +92,6 @@ describe('/api/update handler', () => {
 
     test("don't save messages from private conversations", async () => {
         expect.assertions(2)
-        parameters = { pid: botToken }
         const privateUpdate = {
             ...testUpdate,
             update_id: testUpdate.update_id + 1,
@@ -125,15 +104,8 @@ describe('/api/update handler', () => {
                 }
             }
         }
-        const response = await fetch(baseUrl, {
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json'
-            },
-            method: 'POST',
-            body: JSON.stringify(privateUpdate)
-        })
-        expect(response.status).toBe(200)
+        const response = await runUpdate(botToken, privateUpdate)
+        expect(response._getStatusCode()).toBe(200)
         const dbResult = await findMessage(
             toIntString(privateUpdate.message.chat.id),
             toIntString(privateUpdate.message.message_id)
@@ -143,7 +115,6 @@ describe('/api/update handler', () => {
 
     test('/publish starts publishing the channel', async () => {
         expect.assertions(2)
-        parameters = { pid: botToken }
         const publishUpdate = {
             ...testUpdate,
             update_id: testUpdate.update_id + 2,
@@ -157,15 +128,8 @@ describe('/api/update handler', () => {
                 text: '/publish'
             }
         }
-        const response = await fetch(baseUrl, {
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json'
-            },
-            method: 'POST',
-            body: JSON.stringify(publishUpdate)
-        })
-        expect(response.status).toBe(200)
+        const response = await runUpdate(botToken, publishUpdate)
+        expect(response._getStatusCode()).toBe(200)
         const dbResults = await queryChatsByChatId(
             publishUpdate.message.chat.id
         )
@@ -174,8 +138,6 @@ describe('/api/update handler', () => {
 
     test('/unpublish stops publishing the channel', async () => {
         expect.assertions(2)
-        parameters = { pid: botToken }
-
         const unpublishUpdate = {
             ...testUpdate,
             update_id: testUpdate.update_id + 3,
@@ -193,16 +155,9 @@ describe('/api/update handler', () => {
         const publishId = 'testUnpublish'
         await saveChat(publishId, 0, unpublishUpdate.message.chat)
 
-        const response = await fetch(baseUrl, {
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json'
-            },
-            method: 'POST',
-            body: JSON.stringify(unpublishUpdate)
-        })
+        const response = await runUpdate(botToken, unpublishUpdate)
 
-        expect(response.status).toBe(200)
+        expect(response._getStatusCode()).toBe(200)
         const dbResults = await queryChatsByChatId(
             unpublishUpdate.message.chat.id
         )

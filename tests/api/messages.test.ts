@@ -4,15 +4,13 @@ import { setServerConfig } from '../../config/config'
 const botToken = '123'
 setServerConfig({ botToken, urlProd: 'localhost' })
 
-import http from 'http'
-import fetch from 'isomorphic-unfetch'
-import listen from 'test-listen'
-import { apiResolver } from 'next/dist/next-server/server/api-utils'
-import * as messages from '../../pages/api/messages/[publishId]'
+import messages, { MessagesQuery } from '../../pages/api/messages/[publishId]'
 import { saveMessages, MessageResult } from '../../database/messages'
 import { saveChat } from '../../database/chats'
 import { Chat, Message } from 'telegraf/typings/telegram-types'
 import reverse from 'lodash/fp/reverse'
+import { createMocks, RequestMethod } from 'node-mocks-http'
+import { NextApiRequest, NextApiResponse } from 'next'
 
 const testPublishId = 'test'
 const testChat: Chat = {
@@ -114,58 +112,50 @@ const messageToMessageResult = (message: Message): MessageResult => ({
         : undefined
 })
 
+const runMessages = async (
+    query: MessagesQuery,
+    method: RequestMethod = 'GET'
+) => {
+    const { req, res } = createMocks<NextApiRequest, NextApiResponse>({
+        query,
+        method
+    })
+    await messages(req, res)
+    return res
+}
+
 describe('/api/messages handler', () => {
-    let parameters: messages.MessagesQuery
-    const requestHandler = (
-        req: http.IncomingMessage,
-        res: http.ServerResponse
-    ) => {
-        return apiResolver(req, res, parameters, messages)
-    }
-    const server = http.createServer(requestHandler)
-    let baseUrl: string
     beforeAll(async () => {
         await saveChat(testPublishId, 0, testChat)
         await saveMessages(testMessages)
-        baseUrl = await listen(server)
-    })
-    afterAll(() => {
-        server.close()
     })
     test('responds 404 to POST', async () => {
         expect.assertions(1)
-        const response = await fetch(baseUrl, {
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json'
-            },
-            method: 'POST',
-            body: JSON.stringify({ a: 1, b: 2 })
-        })
-        expect(response.status).toBe(404)
+        const response = await runMessages({ publishId: testPublishId }, 'POST')
+        expect(response._getStatusCode()).toBe(404)
     })
 
     test('gets the messages with the publish id', async () => {
         expect.assertions(2)
-        parameters = { publishId: testPublishId }
-        const response = await fetch(baseUrl)
-        expect(response.status).toBe(200)
+        const parameters = { publishId: testPublishId }
+        const response = await runMessages(parameters)
+        expect(response._getStatusCode()).toBe(200)
         const expected: MessageResult[] = reverse(testMessages).map(
             messageToMessageResult
         )
-        const data = await response.json()
+        const data = await response._getJSONData()
         expect(data).toStrictEqual(expected)
     })
 
     test('gets the last 5 messages', async () => {
         expect.assertions(2)
-        parameters = { publishId: testPublishId, max: '5' }
-        const response = await fetch(baseUrl)
-        expect(response.status).toBe(200)
+        const parameters = { publishId: testPublishId, max: '5' }
+        const response = await runMessages(parameters)
+        expect(response._getStatusCode()).toBe(200)
         const expected: MessageResult[] = reverse(testMessages)
             .slice(0, 5)
             .map(messageToMessageResult)
-        const data = await response.json()
+        const data = await response._getJSONData()
         expect(data).toStrictEqual(expected)
     })
 })
