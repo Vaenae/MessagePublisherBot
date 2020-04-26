@@ -62,7 +62,7 @@ async function runMigrations() {
     })
 }
 
-runMigrations().catch(error => {
+runMigrations().catch((error) => {
     console.error(error)
     process.exit(1)
 })

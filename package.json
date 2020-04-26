@@ -8,7 +8,7 @@
         "start": "next start",
         "start-db": "java -Djava.library.path=dynamodb/DynamoDBLocal_lib -jar dynamodb/DynamoDBLocal.jar",
         "migrations": "ts-node --project database/migrations/tsconfig.json database/migrations/migrate.ts",
-        "lint": "tsc --noEmit && eslint '*/**/*.{js,ts,tsx}' --quiet --fix",
+        "lint": "tsc --noEmit && eslint */**/*.{js,ts,tsx} --fix",
         "register-webhook": "ts-node --project scripts/tsconfig.json scripts/register-webhook.ts",
         "clear-database": "ts-node --project scripts/tsconfig.json scripts/clear-database.ts",
         "test": "npm run clear-database && jest"
@@ -43,8 +43,8 @@
         "@typescript-eslint/parser": "2.26.0",
         "@zeit/next-source-maps": "0.0.4-canary.1",
         "eslint": "6.8.0",
-        "eslint-config-prettier": "6.10.1",
-        "eslint-plugin-prettier": "3.1.2",
+        "eslint-config-prettier": "6.11.0",
+        "eslint-plugin-prettier": "3.1.3",
         "eslint-plugin-react": "7.19.0",
         "eslint-plugin-react-hooks": "3.0.0",
         "husky": "4.2.3",
@@ -62,7 +62,8 @@
         "trailingComma": "none",
         "tabWidth": 4,
         "semi": false,
-        "singleQuote": true
+        "singleQuote": true,
+        "endOfLine": "auto"
     },
     "husky": {
         "hooks": {

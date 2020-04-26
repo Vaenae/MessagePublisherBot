@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React from 'react'
 import { AppProps } from 'next/app'
 import * as Sentry from '@sentry/node'
 import { getClientConfig } from '../config/config'

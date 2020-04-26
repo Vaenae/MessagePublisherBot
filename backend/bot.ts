@@ -13,8 +13,8 @@ function createRandomId(): string {
 }
 
 export const bot = new Telegraf(getServerConfig().botToken)
-bot.command('hello', async ctx => await ctx.reply('Hello'))
-bot.help(async ctx => await ctx.reply('Help: needed'))
+bot.command('hello', async (ctx) => await ctx.reply('Hello'))
+bot.help(async (ctx) => await ctx.reply('Help: needed'))
 
 const publish = async (ctx: ContextMessageUpdate) => {
     const chat = ctx.message?.chat || ctx.chat
@@ -56,11 +56,11 @@ const unpublish = async (ctx: ContextMessageUpdate) => {
         await ctx.reply('Chat already unpublished')
         return
     }
-    await deleteChats(queryResults.map(result => result.chatPublishId))
+    await deleteChats(queryResults.map((result) => result.chatPublishId))
     await ctx.reply('Chat unpublished')
 }
 
-bot.on('text', async update => {
+bot.on('text', async (update) => {
     if (update.message) {
         switch (update.message.text) {
             case '/publish': {

@@ -116,7 +116,7 @@ export async function queryMessagesByChatId(
         })
         .promise()
     return result.Items
-        ? result.Items.map(i => toMessageResult(i as MessageDbItem))
+        ? result.Items.map((i) => toMessageResult(i as MessageDbItem))
         : []
 }
 
@@ -142,14 +142,14 @@ export async function saveMessage(message: IncomingMessage) {
 
 export async function saveMessages(messages: ReadonlyArray<IncomingMessage>) {
     const writeRequests: WriteRequest[][] = chunk(20)(
-        messages.map(message => ({
+        messages.map((message) => ({
             PutRequest: {
                 Item: toMessageDbItem(message) as PutItemInputAttributeMap
             }
         }))
     )
     return await Promise.all(
-        writeRequests.map(reqs =>
+        writeRequests.map((reqs) =>
             dynamodb
                 .batchWriteItem({
                     RequestItems: {

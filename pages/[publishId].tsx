@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react'
+import React from 'react'
 import fetch from 'isomorphic-unfetch'
 import { MessageResult } from '../database/messages'
 import { NextPageContext } from 'next'
@@ -17,7 +17,7 @@ const columns = ['', '', '', '']
 
 const Published = (props: PublishedProps) => {
     const { messages } = props
-    const rows = (messages || []).map(m => [
+    const rows = (messages || []).map((m) => [
         <span key={0}>{showDateTime(m.date)}</span>,
         <span key={1}>
             <strong>

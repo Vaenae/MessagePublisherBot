@@ -89,13 +89,13 @@ export async function queryChatsByChatId(
         })
         .promise()
     return result.Items
-        ? result.Items.map(i => toChatResult(i as ChatDbItem))
+        ? result.Items.map((i) => toChatResult(i as ChatDbItem))
         : []
 }
 
 export async function deleteChats(chatPublishIds: ReadonlyArray<string>) {
     return await Promise.all(
-        chatPublishIds.map(id =>
+        chatPublishIds.map((id) =>
             dynamodb
                 .deleteItem({
                     TableName: chatsTableName,

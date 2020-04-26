@@ -46,9 +46,9 @@ export async function listMigrations() {
 export function getLastMigrationId(
     migrationList: PromiseResult<AWS.DynamoDB.ScanOutput, AWS.AWSError>
 ) {
-    const migrationIds = (migrationList.Items || []).map(i =>
+    const migrationIds = (migrationList.Items || []).map((i) =>
         Math.max(
-            ...Object.values(i.migrationId).map(i => Number.parseInt(i, 10))
+            ...Object.values(i.migrationId).map((i) => Number.parseInt(i, 10))
         )
     )
     return Math.max(...migrationIds)

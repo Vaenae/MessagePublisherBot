@@ -34,7 +34,7 @@ export async function listTables() {
     return await dynamodb
         .listTables()
         .promise()
-        .then(data => data.TableNames || [])
+        .then((data) => data.TableNames || [])
 }
 
 export async function createTable(table: CreateTableInput) {
