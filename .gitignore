@@ -108,3 +108,4 @@ node_modules
 dynamodb
 
 *.db
+.now
