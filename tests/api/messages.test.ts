@@ -9,6 +9,9 @@ import { saveMessages, MessageResult } from '../../database/messages'
 import { saveChat } from '../../database/chats'
 import { Chat, Message } from 'telegraf/typings/telegram-types'
 import reverse from 'lodash/fp/reverse'
+import drop from 'lodash/fp/drop'
+import flow from 'lodash/fp/flow'
+import map from 'lodash/fp/map'
 import { createMocks, RequestMethod } from 'node-mocks-http'
 import { NextApiRequest, NextApiResponse } from 'next'
 
@@ -19,12 +22,12 @@ const testChat: Chat = {
     type: 'supergroup'
 }
 
-function* generateMessage(totalMessages: number) {
-    for (let i = 1; i <= totalMessages; i++) {
+function* generateMessage(totalMessages: number, chatId: number, firstId = 1) {
+    for (let i = firstId; i < totalMessages - firstId; i++) {
         yield {
             date: 1441644540 + i,
             chat: {
-                id: testChat.id,
+                id: chatId,
                 title: 'Test chat',
                 type: 'supergroup'
             },
@@ -42,7 +45,7 @@ function* generateMessage(totalMessages: number) {
 }
 
 const testMessages: ReadonlyArray<Message> = [
-    ...generateMessage(100),
+    ...generateMessage(100, testChat.id),
     {
         date: 1441645532,
         chat: {
@@ -126,7 +129,7 @@ const runMessages = async (
 
 describe('/api/messages handler', () => {
     beforeAll(async () => {
-        await saveChat(testPublishId, 0, testChat)
+        await saveChat(testPublishId, 2, testChat)
         await saveMessages(testMessages)
     })
     test('responds 404 to POST', async () => {
@@ -140,9 +143,11 @@ describe('/api/messages handler', () => {
         const parameters = { publishId: testPublishId }
         const response = await runMessages(parameters)
         expect(response._getStatusCode()).toBe(200)
-        const expected: MessageResult[] = reverse(testMessages).map(
-            messageToMessageResult
-        )
+        const expected: MessageResult = flow(
+            drop(1),
+            reverse,
+            map(messageToMessageResult)
+        )(testMessages)
         const data = await response._getJSONData()
         expect(data).toStrictEqual(expected)
     })

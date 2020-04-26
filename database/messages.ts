@@ -103,14 +103,19 @@ export async function findMessage(
 
 export async function queryMessagesByChatId(
     chatId: number,
+    firstMessage: number,
     max?: number
 ): Promise<MessageResult[]> {
     const queryOptions = max ? { Limit: max } : {}
     const result = await dynamodb
         .query({
             TableName: messagesTableName,
-            KeyConditionExpression: 'chatId = :id',
-            ExpressionAttributeValues: { ':id': { N: toIntString(chatId) } },
+            KeyConditionExpression:
+                'chatId = :id AND messageId >= :firstMessage',
+            ExpressionAttributeValues: {
+                ':id': { N: toIntString(chatId) },
+                ':firstMessage': { N: toIntString(firstMessage) }
+            },
             ScanIndexForward: false,
             ...queryOptions
         })

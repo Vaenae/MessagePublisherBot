@@ -35,6 +35,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     }
     const results = await queryMessagesByChatId(
         chat.chatId,
+        chat.firstMessage,
         max ? toInt(getFirstIfArray(max)) : undefined
     )
     res.status(200)

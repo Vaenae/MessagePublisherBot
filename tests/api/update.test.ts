@@ -114,7 +114,7 @@ describe('/api/update handler', () => {
     })
 
     test('/publish starts publishing the channel', async () => {
-        expect.assertions(2)
+        expect.assertions(3)
         const publishUpdate = {
             ...testUpdate,
             update_id: testUpdate.update_id + 2,
@@ -134,6 +134,9 @@ describe('/api/update handler', () => {
             publishUpdate.message.chat.id
         )
         expect(dbResults.length).toEqual(1)
+        expect(dbResults[0].firstMessage).toEqual(
+            publishUpdate.message.message_id
+        )
     })
 
     test('/unpublish stops publishing the channel', async () => {

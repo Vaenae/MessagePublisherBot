@@ -35,7 +35,7 @@
     "devDependencies": {
         "@sentry/cli": "1.52.1",
         "@types/jest": "25.1.4",
-        "@types/lodash": "4.14.149",
+        "@types/lodash": "4.14.150",
         "@types/node": "13.9.8",
         "@types/react": "16.9.29",
         "@types/test-listen": "1.1.0",
